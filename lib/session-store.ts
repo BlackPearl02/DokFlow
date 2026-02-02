@@ -14,6 +14,8 @@ export interface SessionData {
   headerRowIndex: number;
   fileName: string;
   createdAt: number;
+  xmlBuffer?: Buffer; // Przechowuj oryginalny buffer XML dla ponownego parsowania
+  xmlSections?: Array<{ name: string; path: string[]; size: number }>;
 }
 
 const GLOBAL_KEY = "__dokflow_session_store";
