@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* B2B palette: primary slate, success green, warning amber, error red */
+:root {
+  --color-primary: theme("colors.slate.600");
+  --color-primary-hover: theme("colors.slate.700");
+  --color-success: theme("colors.green.600");
+  --color-warning: theme("colors.amber.600");
+  --color-error: theme("colors.red.600");
+}
+
+/* Numeric columns in tables */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Microanimation: success checkmark fade-in (150–250ms) */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}

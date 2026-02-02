@@ -1,0 +1,63 @@
+# Dokflow — konwerter PZ do Optima / Subiekt GT
+
+Konwerter plików Excel/CSV od dostawców na gotowy CSV do importu PZ w **Comarch Optima** lub **Subiekt GT**. Język i rynek: polski.
+
+> **Licencja:** Projekt objęty licencją zastrzeżoną (proprietary). Wszelkie prawa zastrzeżone — bez pisemnej zgody autora nie wolno kopiować, modyfikować ani wykorzystywać tego kodu. Szczegóły: [LICENSE](LICENSE).
+
+## Architektura
+
+Aplikacja jest **stateless** pod względem plików:
+
+- Plik **nigdy nie jest zapisywany** na dysku ani w bazie danych.
+- Parsowanie i eksport odbywają się **wyłącznie w pamięci**.
+- Po przesłaniu pliku tworzona jest **sesja w pamięci** (Map w Node.js) identyfikowana przez `sessionId`.
+- Po wygenerowaniu i pobraniu CSV **sesja jest usuwana**; dane znikają z serwera.
+- Opcjonalnie sesje starsze niż 30 minut są usuwane przez okresowe czyszczenie (TTL).
+
+Przepływ: **Upload** → **Mapowanie kolumn** → **Generuj i pobierz CSV**. Brak rejestracji, brak kont użytkowników.
+
+## Gwarancja usuwania danych
+
+- **Żadne pliki nie są zapisywane.** Zawartość uploadu trafia tylko do bufora w pamięci, jest parsowana i przechowywana w `Map<sessionId, SessionData>` w procesie Node.js.
+- **Dane są usuwane** po wywołaniu eksportu (pobraniu CSV) lub po upływie 30 minut od utworzenia sesji.
+- **Logi nie zawierają zawartości plików** — w kodzie obowiązuje zasada: nie logować treści uploadów ani wygenerowanego CSV.
+
+## Uruchomienie
+
+```bash
+npm install
+npm run dev
+```
+
+Aplikacja dostępna pod `http://localhost:3000`.
+
+## Lint i formatowanie
+
+- **ESLint** (Next.js + Prettier): `npm run lint`, `npm run lint:fix`
+- **Prettier**: `npm run format` (zapis), `npm run format:check` (kontrola)
+
+## Ograniczenia MVP
+
+- **Brak auth** — brak kont, profili, płatności.
+- **Brak zapisu mapowań** — mapowanie kolumn ustawiane jest przy każdej sesji (sugestie heurystyczne można potwierdzić lub zmienić).
+- **Jeden format wyjściowy CSV** — kolumny: Symbol, Nazwa, Ilość, Cena_jedn, VAT, Waluta (separator średnik, UTF-8 z BOM). Konkretne szablony importu w Subiekcie/Optimie mogą wymagać dopasowania nazw lub kolejności kolumn w ERP; MVP dostarcza „gotowy do edycji” CSV.
+- **Brak obsługi merged cells** i zaawansowanego formatowania Excela — parsowana jest tylko wartość komórek.
+- **Nagłówek w dowolnym wierszu** — użytkownik wybiera numer wiersza nagłówka (1-based); wiersze poniżej traktowane są jako dane.
+
+## Struktura projektu
+
+- `app/` — Next.js App Router: landing, upload, map, download, API routes.
+- `lib/` — parser (Excel/CSV), heurystyki mapowania, magazyn sesji w pamięci, generator CSV.
+- `components/` — komponenty UI (upload, wybór wiersza nagłówka, formularz mapowania, przycisk pobrania).
+
+## API
+
+- **POST /api/parse** — `multipart/form-data`: plik + `headerRowIndex`. Zwraca `sessionId`, `previewRows`, `suggestedMappings`, `columnLabels`.
+- **GET /api/session?sessionId=...** — zwraca podgląd i sugestie dla strony mapowania (404 jeśli sesja nie istnieje).
+- **POST /api/export** — JSON: `sessionId`, `mappings`, `targetErp` (`subiekt` | `optima`). Zwraca `{ csv }`. Po odpowiedzi sesja jest usuwana.
+
+---
+
+## Licencja
+
+Projekt objęty licencją **proprietary (wszelkie prawa zastrzeżone)**. Żadna osoba ani podmiot nie ma prawa kopiować, modyfikować, rozpowszechniać ani w jakikolwiek sposób wykorzystywać tego kodu bez pisemnej zgody autora. Zobacz [LICENSE](LICENSE).
