@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 
-const ACCEPT_EXT = [".xlsx", ".xls", ".csv"];
+const ACCEPT_EXT = [".xlsx", ".xls", ".csv", ".xml"];
 
 function hasValidExtension(file: File): boolean {
   const name = file.name.toLowerCase().trim();
@@ -20,7 +20,7 @@ interface FileUploadProps {
 }
 
 export function FileUpload({
-  accept = ".xlsx,.xls,.csv",
+  accept = ".xlsx,.xls,.csv,.xml",
   onFileSelect,
   selectedFileName,
   disabled,
@@ -82,7 +82,7 @@ export function FileUpload({
   const showSuccess = !!selectedFileName && !uploading;
   const showError = !!errorMessage || invalidFormat;
   const errorText =
-    errorMessage ?? (invalidFormat ? "Nieobsługiwany format pliku. Użyj XLSX, XLS lub CSV." : null);
+    errorMessage ?? (invalidFormat ? "Nieobsługiwany format pliku. Użyj XLSX, XLS, CSV lub XML." : null);
   const isDisabled = disabled || uploading;
 
   const handleClear = (e: React.MouseEvent) => {
@@ -113,7 +113,7 @@ export function FileUpload({
           onDrop={handleDrop}
           disabled={isDisabled}
           className="absolute inset-0 z-10 cursor-pointer opacity-0 disabled:cursor-not-allowed"
-          aria-label="Wybierz plik lub przeciągnij tutaj. Format XLSX, XLS lub CSV."
+          aria-label="Wybierz plik lub przeciągnij tutaj. Format XLSX, XLS, CSV lub XML."
         />
 
         {/* Tekst pod inputem (pointer-events-none), żeby nie blokować kliknięć */}
@@ -160,7 +160,7 @@ export function FileUpload({
       </div>
 
       {!uploading && !showSuccess && (
-        <p className="text-center text-xs text-slate-500">XLSX, XLS lub CSV</p>
+        <p className="text-center text-xs text-slate-500">XLSX, XLS, CSV lub XML</p>
       )}
 
       {showError && errorText && (

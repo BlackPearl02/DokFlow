@@ -18,6 +18,10 @@ const SKU_SYNONYMS = [
   "item",
   "nr",
   "numer",
+  "index",
+  "ean",
+  "barcode",
+  "kody kreskowe",
   "编号",
   "货号",
 ];

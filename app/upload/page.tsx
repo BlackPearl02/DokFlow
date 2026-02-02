@@ -46,7 +46,7 @@ export default function UploadPage() {
     <div className="mx-auto max-w-lg">
       <h1 className="text-xl font-bold text-slate-900">Prześlij plik</h1>
       <p className="mt-1 text-sm text-slate-600">
-        Obsługiwane formaty: XLSX, XLS, CSV. Wybierz wiersz, w którym znajduje się nagłówek tabeli.
+        Obsługiwane formaty: XLSX, XLS, CSV, XML. Wybierz wiersz, w którym znajduje się nagłówek tabeli.
       </p>
 
       <div className="mt-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
