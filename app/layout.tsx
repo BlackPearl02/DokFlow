@@ -10,9 +10,57 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Dokflow — konwerter PZ do Optima",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://dokflow.pl"),
+  title: {
+    default: "Dokflow — konwerter PZ do Optima",
+    template: "%s | Dokflow",
+  },
   description:
-    "Prześlij plik od dostawcy, ustaw mapowanie kolumn, pobierz CSV do importu PZ w Comarch Optima.",
+    "Przekształć pliki od dostawcy (Excel, CSV, XML) w gotowy CSV do importu dokumentów PZ w Comarch Optima. Bez rejestracji, szybko i bezpiecznie.",
+  keywords: [
+    "konwerter PZ",
+    "import PZ Optima",
+    "Comarch Optima",
+    "konwersja CSV",
+    "import dokumentów",
+    "przyjęcie zewnętrzne",
+    "konwerter Excel do CSV",
+    "import faktur Optima",
+  ],
+  authors: [{ name: "Dokflow" }],
+  creator: "Dokflow",
+  publisher: "Dokflow",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    locale: "pl_PL",
+    url: "/",
+    siteName: "Dokflow",
+    title: "Dokflow — konwerter PZ do Optima",
+    description:
+      "Przekształć pliki od dostawcy (Excel, CSV, XML) w gotowy CSV do importu dokumentów PZ w Comarch Optima. Bez rejestracji, szybko i bezpiecznie.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Dokflow — konwerter PZ do Optima",
+    description:
+      "Przekształć pliki od dostawcy (Excel, CSV, XML) w gotowy CSV do importu dokumentów PZ w Comarch Optima. Bez rejestracji, szybko i bezpiecznie.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({
@@ -67,6 +115,34 @@ export default function RootLayout({
           <LayoutWithSteps />
         </header>
         <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">{children}</main>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              name: "Dokflow",
+              applicationCategory: "BusinessApplication",
+              operatingSystem: "Web",
+              description:
+                "Konwerter plików Excel, CSV i XML do formatu CSV zgodnego z importem dokumentów PZ (Przyjęcie Zewnętrzne) w Comarch Optima. Bez rejestracji, przetwarzanie w pamięci, dane usuwane po eksporcie.",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "PLN",
+              },
+              featureList: [
+                "Konwersja plików XLSX, XLS, CSV, XML",
+                "Mapowanie kolumn do pól ERP",
+                "Eksport do CSV zgodnego z Optimą",
+                "Przetwarzanie w pamięci (bezpieczeństwo danych)",
+                "Bez rejestracji i logowania",
+                "Automatyczne wykrywanie nagłówków",
+                "Przewalutowanie do PLN",
+              ],
+            }),
+          }}
+        />
       </body>
     </html>
   );

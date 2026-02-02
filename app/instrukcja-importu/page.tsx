@@ -1,4 +1,29 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Instrukcja importu CSV do Comarch Optima",
+  description:
+    "Dowiedz się jak zaimportować wygenerowany plik CSV do dokumentu PZ (Przyjęcie Zewnętrzne) lub Faktury Zakupowej w Comarch Optima. Krok po kroku z rozwiązywaniem problemów.",
+  keywords: [
+    "import CSV Optima",
+    "import PZ Optima",
+    "Comarch Optima import",
+    "instrukcja importu Optima",
+    "jak zaimportować CSV do Optimy",
+    "import pozycji Optima",
+    "przyjęcie zewnętrzne import",
+  ],
+  alternates: {
+    canonical: "/instrukcja-importu",
+  },
+  openGraph: {
+    title: "Instrukcja importu CSV do Comarch Optima — Dokflow",
+    description:
+      "Dowiedz się jak zaimportować wygenerowany plik CSV do dokumentu PZ (Przyjęcie Zewnętrzne) lub Faktury Zakupowej w Comarch Optima. Krok po kroku z rozwiązywaniem problemów.",
+    url: "/instrukcja-importu",
+  },
+};
 
 export default function InstrukcjaImportuPage() {
   return (
@@ -275,6 +300,51 @@ export default function InstrukcjaImportuPage() {
           </Link>
         </div>
       </section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "HowTo",
+            name: "Instrukcja importu pliku CSV do Comarch Optima",
+            description:
+              "Krok po kroku instrukcja importu pliku CSV do dokumentu PZ (Przyjęcie Zewnętrzne) lub Faktury Zakupowej w Comarch Optima.",
+            step: [
+              {
+                "@type": "HowToStep",
+                position: 1,
+                name: "Otwórz dokument PZ",
+                text: "W Optimie przejdź do modułu Magazyn i otwórz nowy dokument Przyjęcie Zewnętrzne (PZ) lub edytuj istniejący dokument w buforze.",
+              },
+              {
+                "@type": "HowToStep",
+                position: 2,
+                name: "Znajdź opcję importu",
+                text: "Na zakładce [Ogólne] dokumentu, na górnej wstążce programu znajdź opcję Kolektor danych → Importuj pozycje.",
+              },
+              {
+                "@type": "HowToStep",
+                position: 3,
+                name: "Wskaż plik CSV",
+                text: "W oknie importu wybierz plik CSV z dysku lokalnego lub z IBARD. Plik musi mieć rozszerzenie .csv lub .txt.",
+              },
+              {
+                "@type": "HowToStep",
+                position: 4,
+                name: "Wybierz źródło ceny",
+                text: "Wybierz jedną z opcji: Pobieraj ceny z programu (Optima użyje cen domyślnych z cennika) lub Pobieraj ceny z pliku (Optima użyje cen z pliku CSV).",
+              },
+              {
+                "@type": "HowToStep",
+                position: 5,
+                name: "Zatwierdź import",
+                text: "Kliknij OK lub Importuj. Optima zaimportuje pozycje z pliku na dokument.",
+              },
+            ],
+            totalTime: "PT5M",
+          }),
+        }}
+      />
     </div>
   );
 }

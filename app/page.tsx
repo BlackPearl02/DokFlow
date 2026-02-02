@@ -1,4 +1,20 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Konwerter PZ do Optima — Dokflow",
+  description:
+    "Przekształć pliki od dostawcy (Excel, CSV, XML) w gotowy CSV do importu dokumentów PZ w Comarch Optima. Bez rejestracji, szybko i bezpiecznie. Obsługiwane formaty: XLSX, XLS, CSV, XML.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Konwerter PZ do Optima — Dokflow",
+    description:
+      "Przekształć pliki od dostawcy (Excel, CSV, XML) w gotowy CSV do importu dokumentów PZ w Comarch Optima. Bez rejestracji, szybko i bezpiecznie.",
+    url: "/",
+  },
+};
 
 export default function LandingPage() {
   return (
