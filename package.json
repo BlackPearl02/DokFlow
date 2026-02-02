@@ -17,6 +17,7 @@
   "license": "UNLICENSED",
   "description": "",
   "dependencies": {
+    "@vercel/analytics": "^1.4.0",
     "csv-parse": "^6.1.0",
     "fast-xml-parser": "^4.3.5",
     "next": "^14.2.35",
