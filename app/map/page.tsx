@@ -289,8 +289,10 @@ function MapPageContent() {
         <>
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_minmax(280px,360px)]">
             <div className="min-w-0">
-              <div className="mb-2 text-xs text-slate-600">
-                Kliknij wiersz, aby wybrać go jako nagłówek tabeli
+              <div className="mb-4 rounded-lg border-2 border-blue-400 bg-blue-50 px-4 py-3">
+                <p className="text-sm font-semibold text-blue-900">
+                  Kliknij wiersz, aby wybrać go jako nagłówek tabeli
+                </p>
               </div>
               <div className="overflow-x-auto rounded-lg border border-slate-200">
                 <table className="min-w-full text-sm" aria-label="Podgląd pierwszych 20 wierszy">
