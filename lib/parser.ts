@@ -10,6 +10,7 @@ export type ParseResult = {
   rows: string[][]; 
   sheetName?: string;
   xmlSections?: Array<{ name: string; path: string[]; size: number }>;
+  excelSheets?: Array<{ name: string; index: number }>;
 };
 
 const EXCEL_EXT = [".xlsx", ".xls"];
@@ -21,16 +22,58 @@ function getExtension(fileName: string): string {
   return i >= 0 ? fileName.slice(i).toLowerCase() : "";
 }
 
-function bufferToRowsFromExcel(buffer: Buffer): string[][] {
-  const workbook = XLSX.read(buffer, { type: "buffer", cellDates: false });
-  const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-  if (!firstSheet) return [];
-  const aoa = XLSX.utils.sheet_to_json<string[]>(firstSheet, {
+function bufferToRowsFromExcel(
+  buffer: Buffer,
+  selectedSheetIndex?: number
+): { rows: string[][]; sheets: Array<{ name: string; index: number }> } {
+  const workbook = XLSX.read(buffer, { 
+    type: "buffer", 
+    cellDates: false,
+    // Opcje dla lepszej obsługi formuł i scalonych komórek
+    cellFormula: false, // Nie zwracaj formuł, tylko wartości obliczone
+    cellStyles: false, // Nie potrzebujemy stylów
+    sheetStubs: false, // Pomiń puste arkusze
+  });
+
+  const sheetNames = workbook.SheetNames;
+  if (sheetNames.length === 0) {
+    return { rows: [], sheets: [] };
+  }
+
+  // Utwórz listę dostępnych arkuszy
+  const sheets = sheetNames.map((name, index) => ({
+    name,
+    index,
+  }));
+
+  // Wybierz arkusz do parsowania
+  let sheetIndex = selectedSheetIndex ?? 0;
+  if (sheetIndex < 0 || sheetIndex >= sheetNames.length) {
+    sheetIndex = 0; // Fallback do pierwszego arkusza
+  }
+
+  const selectedSheet = workbook.Sheets[sheetNames[sheetIndex]];
+  if (!selectedSheet) {
+    return { rows: [], sheets };
+  }
+
+  // Konwertuj arkusz do tablicy tablic
+  // raw: false - zwraca wartości obliczone z formuł (nie same formuły)
+  // defval: "" - domyślna wartość dla pustych komórek
+  // blankrows: false - pomiń całkowicie puste wiersze
+  const aoa = XLSX.utils.sheet_to_json<string[]>(selectedSheet, {
     header: 1,
     defval: "",
-    raw: false,
+    raw: false, // Zwraca wartości obliczone, nie formuły
+    blankrows: false, // Pomiń puste wiersze
   });
-  return aoa.map((row) => (Array.isArray(row) ? row.map(String) : [String(row)]));
+
+  // Obsługa scalonych komórek - XLSX automatycznie wypełnia scalone komórki
+  // wartością z pierwszej komórki, więc nie musimy tego robić ręcznie
+
+  const rows = aoa.map((row) => (Array.isArray(row) ? row.map(String) : [String(row)]));
+
+  return { rows, sheets };
 }
 
 function bufferToRowsFromCsv(buffer: Buffer): string[][] {
@@ -249,12 +292,13 @@ function bufferToRowsFromXml(
 export function parseFile(
   buffer: Buffer,
   fileName: string,
-  xmlSectionPath?: string[]
+  xmlSectionPath?: string[],
+  excelSheetIndex?: number
 ): ParseResult {
   const ext = getExtension(fileName);
   if (EXCEL_EXT.some((e) => ext === e)) {
-    const rows = bufferToRowsFromExcel(buffer);
-    return { rows };
+    const { rows, sheets } = bufferToRowsFromExcel(buffer, excelSheetIndex);
+    return { rows, excelSheets: sheets, sheetName: sheets[excelSheetIndex ?? 0]?.name };
   }
   if (CSV_EXT.some((e) => ext === e)) {
     const rows = bufferToRowsFromCsv(buffer);

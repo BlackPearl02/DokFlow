@@ -16,6 +16,8 @@ export interface SessionData {
   createdAt: number;
   xmlBuffer?: Buffer; // Przechowuj oryginalny buffer XML dla ponownego parsowania
   xmlSections?: Array<{ name: string; path: string[]; size: number }>;
+  excelBuffer?: Buffer; // Przechowuj oryginalny buffer Excel dla ponownego parsowania
+  excelSheets?: Array<{ name: string; index: number }>;
 }
 
 const GLOBAL_KEY = "__dokflow_session_store";

@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Sesja wygasła lub nie istnieje." }, { status: 404 });
   }
 
-  const { rawRows, headerRowIndex, fileName, xmlSections } = session;
+  const { rawRows, headerRowIndex, fileName, xmlSections, excelSheets } = session;
   const suggestedMappings = suggestMappings(rawRows, headerRowIndex);
   const columnLabels = getColumnLabels(rawRows, headerRowIndex);
   const dataStart = headerRowIndex + 1;
@@ -38,13 +38,14 @@ export async function GET(request: NextRequest) {
     headerRowIndex,
     fileName: fileName ?? undefined,
     xmlSections: xmlSections ?? undefined,
+    excelSheets: excelSheets ?? undefined,
   });
 }
 
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { sessionId, headerRowIndex, xmlSectionPath } = body;
+    const { sessionId, headerRowIndex, xmlSectionPath, excelSheetIndex } = body;
 
     const session = sessionStore.get(sessionId);
     if (!session) {
@@ -81,9 +82,48 @@ export async function PUT(request: NextRequest) {
           headerRowIndex: newHeaderRowIndex,
           fileName: updatedSession.fileName ?? undefined,
           xmlSections: xmlSections ?? undefined,
+          excelSheets: updatedSession.excelSheets ?? undefined,
         });
       } catch (parseErr) {
         const message = parseErr instanceof Error ? parseErr.message : "Błąd parsowania XML.";
+        return NextResponse.json({ error: message }, { status: 400 });
+      }
+    }
+
+    // Jeśli podano excelSheetIndex, ponownie sparsuj Excel z wybranym arkuszem
+    if (excelSheetIndex !== undefined && session.excelBuffer && session.fileName) {
+      try {
+        const { rows, excelSheets } = parseFile(session.excelBuffer, session.fileName, undefined, excelSheetIndex);
+        
+        if (rows.length === 0) {
+          return NextResponse.json({ error: "Wybrany arkusz nie zawiera danych." }, { status: 400 });
+        }
+
+        const newHeaderRowIndex = headerRowIndex !== undefined ? headerRowIndex : 0;
+        sessionStore.update(sessionId, {
+          rawRows: rows,
+          headerRowIndex: newHeaderRowIndex,
+          excelSheets: excelSheets,
+        });
+
+        const updatedSession = sessionStore.get(sessionId)!;
+        const suggestedMappings = suggestMappings(rows, newHeaderRowIndex);
+        const columnLabels = getColumnLabels(rows, newHeaderRowIndex);
+        const dataStart = newHeaderRowIndex + 1;
+        const maxPreviewRows = Math.min(100, dataStart + PREVIEW_ROWS);
+        const previewRows = rows.slice(0, maxPreviewRows);
+
+        return NextResponse.json({
+          previewRows,
+          suggestedMappings,
+          columnLabels,
+          headerRowIndex: newHeaderRowIndex,
+          fileName: updatedSession.fileName ?? undefined,
+          xmlSections: updatedSession.xmlSections ?? undefined,
+          excelSheets: excelSheets ?? undefined,
+        });
+      } catch (parseErr) {
+        const message = parseErr instanceof Error ? parseErr.message : "Błąd parsowania Excel.";
         return NextResponse.json({ error: message }, { status: 400 });
       }
     }
@@ -101,7 +141,7 @@ export async function PUT(request: NextRequest) {
 
     // Zwróć zaktualizowane dane
     const updatedSession = sessionStore.get(sessionId)!;
-    const { rawRows, fileName, xmlSections } = updatedSession;
+    const { rawRows, fileName, xmlSections, excelSheets } = updatedSession;
     const suggestedMappings = suggestMappings(rawRows, headerRowIndex);
     const columnLabels = getColumnLabels(rawRows, headerRowIndex);
     const dataStart = headerRowIndex + 1;
@@ -117,6 +157,7 @@ export async function PUT(request: NextRequest) {
       headerRowIndex,
       fileName: fileName ?? undefined,
       xmlSections: xmlSections ?? undefined,
+      excelSheets: excelSheets ?? undefined,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Błąd aktualizacji sesji.";

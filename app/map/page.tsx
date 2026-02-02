@@ -66,6 +66,9 @@ function MapPageContent() {
   const [xmlSections, setXmlSections] = useState<Array<{ name: string; path: string[]; size: number }>>([]);
   const [selectedXmlSectionPath, setSelectedXmlSectionPath] = useState<string[] | null>(null);
   const [updatingXmlSection, setUpdatingXmlSection] = useState(false);
+  const [excelSheets, setExcelSheets] = useState<Array<{ name: string; index: number }>>([]);
+  const [selectedExcelSheetIndex, setSelectedExcelSheetIndex] = useState<number | null>(null);
+  const [updatingExcelSheet, setUpdatingExcelSheet] = useState(false);
 
   useEffect(() => {
     if (!sessionId) {
@@ -94,6 +97,11 @@ function MapPageContent() {
         // Ustaw domyślną wybraną sekcję (pierwsza z listy lub null jeśli brak)
         if (data.xmlSections && data.xmlSections.length > 0) {
           setSelectedXmlSectionPath(data.xmlSections[0].path);
+        }
+        setExcelSheets(data.excelSheets ?? []);
+        // Ustaw domyślną wybrany arkusz (pierwszy z listy lub null jeśli brak)
+        if (data.excelSheets && data.excelSheets.length > 0) {
+          setSelectedExcelSheetIndex(data.excelSheets[0].index);
         }
         
         // Znajdź kolumnę waluty
@@ -136,6 +144,7 @@ function MapPageContent() {
       setMappings(initialMappings(data.suggestedMappings ?? {}));
       setXmlSections(data.xmlSections ?? []);
       setSelectedXmlSectionPath(sectionPath);
+      setExcelSheets(data.excelSheets ?? []);
       
       // Znajdź kolumnę waluty
       const currencyCol = findCurrencyColumn(data.previewRows ?? [], data.headerRowIndex ?? 0);
@@ -146,6 +155,44 @@ function MapPageContent() {
       setUpdatingXmlSection(false);
     }
   }, [sessionId, updatingXmlSection]);
+
+  const handleExcelSheetChange = useCallback(async (sheetIndex: number) => {
+    if (!sessionId || updatingExcelSheet) return;
+    setUpdatingExcelSheet(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/session", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId,
+          excelSheetIndex: sheetIndex,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Błąd zmiany arkusza Excel.");
+        setUpdatingExcelSheet(false);
+        return;
+      }
+      setPreviewRows(data.previewRows ?? []);
+      setColumnLabels(data.columnLabels ?? []);
+      setSuggestedMappings(data.suggestedMappings ?? {});
+      setHeaderRowIndex(data.headerRowIndex ?? 0);
+      setMappings(initialMappings(data.suggestedMappings ?? {}));
+      setExcelSheets(data.excelSheets ?? []);
+      setSelectedExcelSheetIndex(sheetIndex);
+      setXmlSections(data.xmlSections ?? []);
+      
+      // Znajdź kolumnę waluty
+      const currencyCol = findCurrencyColumn(data.previewRows ?? [], data.headerRowIndex ?? 0);
+      setCurrencyColumnIndex(currencyCol);
+    } catch {
+      setError("Błąd połączenia.");
+    } finally {
+      setUpdatingExcelSheet(false);
+    }
+  }, [sessionId, updatingExcelSheet]);
 
   const handleHeaderRowClick = useCallback(async (rowIndex: number) => {
     if (!sessionId || updatingHeader || rowIndex === headerRowIndex) return;
@@ -172,6 +219,7 @@ function MapPageContent() {
       setHeaderRowIndex(data.headerRowIndex ?? 0);
       setMappings(initialMappings(data.suggestedMappings ?? {}));
       setXmlSections(data.xmlSections ?? []);
+      setExcelSheets(data.excelSheets ?? []);
       
       // Znajdź kolumnę waluty
       const currencyCol = findCurrencyColumn(data.previewRows ?? [], data.headerRowIndex ?? 0);
@@ -390,6 +438,64 @@ function MapPageContent() {
               {updatingXmlSection && (
                 <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
                   Przetwarzanie wybranej sekcji...
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {excelSheets.length > 1 && (
+        <div className="rounded-2xl border border-slate-200/80 bg-slate-50 p-6 shadow-md shadow-slate-200/20 dark:border-slate-700/80 dark:bg-slate-800/50 dark:shadow-slate-950/20">
+          <div className="flex items-start gap-3 mb-4">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-base text-slate-900 dark:text-slate-200 mb-2">
+                Wybierz arkusz Excel do przetworzenia
+              </p>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                W pliku Excel znaleziono kilka arkuszy. Wybierz arkusz zawierający dane do importu.
+              </p>
+              <div className="flex flex-col gap-2">
+                {excelSheets.map((sheet, index) => {
+                  const isSelected = selectedExcelSheetIndex === sheet.index;
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => handleExcelSheetChange(sheet.index)}
+                      disabled={updatingExcelSheet}
+                      className={`flex items-center justify-between rounded-lg border p-3 text-left transition-all ${
+                        isSelected
+                          ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20"
+                          : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600 dark:hover:bg-slate-700"
+                      } ${updatingExcelSheet ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                    >
+                      <div className="flex-1">
+                        <div className="font-medium text-slate-900 dark:text-slate-200">
+                          {sheet.name}
+                        </div>
+                        <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                          Arkusz {sheet.index + 1} z {excelSheets.length}
+                        </div>
+                      </div>
+                      {isSelected && (
+                        <div className="ml-3 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white dark:bg-blue-400">
+                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+              {updatingExcelSheet && (
+                <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
+                  Przetwarzanie wybranego arkusza...
                 </p>
               )}
             </div>

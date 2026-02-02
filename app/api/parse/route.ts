@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     const ext = file.name.toLowerCase().endsWith(".xml") ? ".xml" : 
                 file.name.toLowerCase().endsWith(".xlsx") || file.name.toLowerCase().endsWith(".xls") ? ".xlsx" : ".csv";
     
-    const { rows, xmlSections } = parseFile(buffer, file.name);
+    const { rows, xmlSections, excelSheets } = parseFile(buffer, file.name);
 
     if (rows.length === 0) {
       return NextResponse.json({ error: "Plik nie zawiera danych." }, { status: 400 });
@@ -42,6 +42,9 @@ export async function POST(request: NextRequest) {
       // Przechowuj buffer XML tylko dla plików XML
       xmlBuffer: ext === ".xml" ? buffer : undefined,
       xmlSections: xmlSections,
+      // Przechowuj buffer Excel tylko dla plików Excel
+      excelBuffer: ext === ".xlsx" ? buffer : undefined,
+      excelSheets: excelSheets,
     });
 
     const suggestedMappings = suggestMappings(rows, headerRowIndex);
@@ -59,6 +62,7 @@ export async function POST(request: NextRequest) {
       columnLabels,
       headerRowIndex,
       xmlSections: xmlSections,
+      excelSheets: excelSheets,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Błąd parsowania pliku.";
