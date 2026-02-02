@@ -19,7 +19,7 @@ export function DownloadButton({
       onClick={onClick}
       disabled={disabled || loading}
       aria-busy={loading}
-      className="group relative flex-1 overflow-hidden rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-3 font-semibold text-white shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-green-500/40 disabled:scale-100 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 active:scale-100 dark:from-green-500 dark:to-emerald-500 dark:shadow-green-500/20 dark:hover:shadow-green-500/30 sm:flex-initial"
+      className="group relative flex-1 overflow-hidden rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-3 font-semibold text-white shadow-md shadow-green-500/20 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:shadow-green-500/25 disabled:scale-100 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 active:scale-100 dark:from-green-500 dark:to-emerald-500 dark:shadow-green-500/15 dark:hover:shadow-green-500/20 sm:flex-initial"
     >
       <span className="relative z-10 flex items-center justify-center gap-2">
         {loading ? (

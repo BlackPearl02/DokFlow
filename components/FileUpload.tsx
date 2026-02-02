@@ -100,8 +100,8 @@ export function FileUpload({
           relative flex min-h-[180px] flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-10 transition-all duration-300 shadow-md
           ${isDisabled ? "cursor-not-allowed opacity-70" : "cursor-pointer"}
           ${isDragOver 
-            ? "border-blue-400 bg-gradient-to-br from-blue-50/80 to-blue-100/50 scale-105 shadow-lg shadow-blue-200/50 dark:border-blue-500 dark:from-blue-950/30 dark:to-blue-900/20 dark:shadow-blue-950/50" 
-            : "border-slate-300 bg-gradient-to-br from-white to-slate-50/50 hover:border-blue-300 hover:from-blue-50/30 hover:to-slate-50 hover:shadow-lg hover:scale-[1.02] dark:border-slate-700 dark:from-slate-800 dark:to-slate-900/50 dark:hover:border-blue-600 dark:hover:from-blue-950/20 dark:hover:to-slate-900"
+            ? "border-blue-400 bg-blue-50 scale-[1.01] shadow-lg shadow-blue-200/20 dark:border-blue-500 dark:bg-blue-950/20 dark:shadow-blue-950/20" 
+            : "border-slate-300 bg-white hover:border-slate-400 hover:bg-slate-50 hover:shadow-md hover:scale-[1.01] dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600 dark:hover:bg-slate-700"
           }
         `}
       >
@@ -137,7 +137,7 @@ export function FileUpload({
               className="flex flex-col items-center gap-3 text-green-700 dark:text-green-400 animate-fade-in"
               aria-live="polite"
             >
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg shadow-green-500/30 dark:shadow-green-500/20">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-600 text-white shadow-md shadow-green-500/20 dark:bg-green-500 dark:shadow-green-500/15">
                 <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
@@ -149,7 +149,7 @@ export function FileUpload({
 
           {!uploading && !showSuccess && (
             <div className="flex flex-col items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 text-blue-600 dark:from-blue-900/30 dark:to-indigo-900/30 dark:text-blue-400">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400">
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
@@ -173,8 +173,8 @@ export function FileUpload({
         )}
       </div>
 
-      {showError && errorText && (
-        <div className="rounded-xl border border-red-200/80 bg-gradient-to-br from-red-50/80 to-red-100/50 p-4 shadow-md shadow-red-200/30 dark:border-red-800/80 dark:from-red-950/30 dark:to-red-900/20 dark:shadow-red-950/50" role="alert" aria-live="polite">
+        {showError && errorText && (
+        <div className="rounded-xl border border-red-200/80 bg-red-50 p-4 shadow-md shadow-red-200/20 dark:border-red-800/80 dark:bg-red-950/20 dark:shadow-red-950/20" role="alert" aria-live="polite">
           <div className="flex items-start gap-3">
             <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-600 dark:bg-red-900/50 dark:text-red-400">
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

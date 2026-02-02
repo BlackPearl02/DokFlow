@@ -112,16 +112,16 @@ export function MappingForm({
   return (
     <div className="space-y-6">
       {symbolMapped && (
-        <div className="rounded-2xl border border-blue-200/80 bg-gradient-to-br from-blue-50/80 via-blue-50/50 to-white p-5 shadow-lg shadow-blue-200/30 dark:border-blue-800/80 dark:from-blue-950/30 dark:via-blue-900/20 dark:to-slate-900 dark:shadow-blue-950/50">
+        <div className="rounded-2xl border border-slate-200/80 bg-slate-50 p-5 shadow-md shadow-slate-200/20 dark:border-slate-700/80 dark:bg-slate-800/50 dark:shadow-slate-950/20">
           <div className="flex items-start gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400">
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div className="flex-1">
-              <p className="font-bold text-base text-blue-900 dark:text-blue-200">Ważne: Mapowanie identyfikatora towaru</p>
-              <p className="mt-2 text-sm text-blue-800 dark:text-blue-300">
+              <p className="font-bold text-base text-slate-900 dark:text-slate-200">Ważne: Mapowanie identyfikatora towaru</p>
+              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
                 {hasEan
                   ? "Mapujesz kolumnę z kodem EAN. Upewnij się, że kody EAN w pliku dokładnie odpowiadają kodom EAN w Optimie."
                   : hasIndex
@@ -133,7 +133,7 @@ export function MappingForm({
         </div>
       )}
       <div className="space-y-4">
-        <div className="rounded-xl border border-slate-200/80 bg-white/80 backdrop-blur-sm p-6 shadow-lg shadow-slate-200/30 dark:border-slate-700/80 dark:bg-slate-800/80 dark:shadow-slate-950/50">
+        <div className="rounded-xl border border-slate-200/80 bg-white p-6 shadow-md shadow-slate-200/20 dark:border-slate-700/80 dark:bg-slate-800 dark:shadow-slate-950/20">
           <p className="text-base font-bold text-slate-900 dark:text-slate-100 mb-5">Mapowanie kolumn</p>
           <div className="space-y-5">
             {ERP_FIELDS.map(({ id, label, required }) => {
@@ -193,18 +193,18 @@ export function MappingForm({
           </div>
         </div>
         {!allRequiredMapped && (
-          <div className="rounded-xl border border-amber-200/80 bg-gradient-to-br from-amber-50/80 via-amber-50/50 to-white p-4 shadow-md shadow-amber-200/30 dark:border-amber-800/80 dark:from-amber-950/30 dark:via-amber-900/20 dark:to-slate-900 dark:shadow-amber-950/50">
+          <div className="rounded-xl border border-slate-200/80 bg-slate-50 p-4 shadow-md shadow-slate-200/20 dark:border-slate-700/80 dark:bg-slate-800/50 dark:shadow-slate-950/20">
             <div className="flex items-start gap-3">
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-900/50 dark:text-amber-400">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400">
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
               <div className="flex-1">
-                <p className="font-bold text-sm text-amber-900 dark:text-amber-200">Mapuj wymagane pola:</p>
-                <ul className="mt-2 space-y-1.5 text-xs text-amber-800 dark:text-amber-300">
+                <p className="font-bold text-sm text-slate-900 dark:text-slate-200">Mapuj wymagane pola:</p>
+                <ul className="mt-2 space-y-1.5 text-xs text-slate-700 dark:text-slate-300">
                   <li className="flex items-start gap-2">
-                    <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" aria-hidden />
+                    <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-500 dark:bg-slate-400" aria-hidden />
                     <span><strong>Symbol (SKU)</strong> — kod towaru, index lub kod EAN (musi odpowiadać wartościom w Optimie)</span>
                   </li>
                   <li className="flex items-start gap-2">
@@ -223,7 +223,7 @@ export function MappingForm({
       </div>
       
       <div className="space-y-4">
-        <div className="rounded-xl border border-slate-200/80 bg-white/80 backdrop-blur-sm p-5 shadow-lg shadow-slate-200/30 dark:border-slate-700/80 dark:bg-slate-800/80 dark:shadow-slate-950/50">
+        <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-md shadow-slate-200/20 dark:border-slate-700/80 dark:bg-slate-800 dark:shadow-slate-950/20">
           <label htmlFor="currency" className="block text-sm font-bold text-slate-900 dark:text-slate-100 mb-3">
             Waluta w pliku
           </label>
@@ -241,18 +241,18 @@ export function MappingForm({
             ))}
           </select>
           {detectedCurrency && detectedCurrency !== selectedCurrency && (
-            <div className="mt-3 flex items-center gap-2 rounded-lg border border-blue-200/50 bg-blue-50/50 p-2.5 dark:border-blue-900/30 dark:bg-blue-950/20">
-              <svg className="h-4 w-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="mt-3 flex items-center gap-2 rounded-lg border border-slate-200/50 bg-slate-50 p-2.5 dark:border-slate-700/50 dark:bg-slate-800/50">
+              <svg className="h-4 w-4 text-slate-600 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <p className="text-xs font-medium text-blue-800 dark:text-blue-300">
+              <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
                 Wykryto walutę w pliku: <strong>{detectedCurrency}</strong>
               </p>
             </div>
           )}
         </div>
         
-        <div className="rounded-xl border border-slate-200/80 bg-white/80 backdrop-blur-sm p-5 shadow-lg shadow-slate-200/30 dark:border-slate-700/80 dark:bg-slate-800/80 dark:shadow-slate-950/50">
+        <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-md shadow-slate-200/20 dark:border-slate-700/80 dark:bg-slate-800 dark:shadow-slate-950/20">
           <div className="flex items-start gap-4">
             <input
               type="checkbox"

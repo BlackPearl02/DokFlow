@@ -47,18 +47,18 @@ export default function UploadPage() {
           Obsługiwane formaty: XLSX, XLS, CSV, XML. W następnym kroku wybierzesz wiersz nagłówka.
         </p>
       </div>
-      <div className="mb-6 rounded-2xl border border-blue-200/80 bg-gradient-to-br from-blue-50/80 via-blue-50/50 to-white p-6 shadow-lg shadow-blue-200/30 dark:border-blue-800/80 dark:from-blue-950/30 dark:via-blue-900/20 dark:to-slate-900 dark:shadow-blue-950/50">
-        <div className="flex items-start gap-3 mb-3">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400">
+      <div className="mb-6 rounded-2xl border border-slate-200/80 bg-slate-50 p-6 shadow-md shadow-slate-200/20 dark:border-slate-700/80 dark:bg-slate-800/50 dark:shadow-slate-950/20">
+          <div className="flex items-start gap-3 mb-3">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400">
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
           <div className="flex-1">
-            <p className="font-semibold text-base text-blue-900 dark:text-blue-200 mb-3">Wymagania dla importu do Optimy:</p>
-            <ul className="space-y-2 text-sm text-blue-800 dark:text-blue-300">
+            <p className="font-semibold text-base text-slate-900 dark:text-slate-200 mb-3">Wymagania dla importu do Optimy:</p>
+            <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
               <li className="flex items-start gap-2">
-                <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500 dark:bg-blue-400" aria-hidden />
+                <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-500 dark:bg-slate-400" aria-hidden />
                 <span>Plik musi zawierać kolumny z <strong>kodem towaru (index)</strong> lub <strong>kodem EAN</strong></span>
               </li>
               <li className="flex items-start gap-2">
@@ -78,7 +78,7 @@ export default function UploadPage() {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-200/80 bg-white/80 backdrop-blur-sm p-8 shadow-xl shadow-slate-200/50 dark:border-slate-700/80 dark:bg-slate-800/80 dark:shadow-slate-950/50">
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-8 shadow-md shadow-slate-200/20 dark:border-slate-700/80 dark:bg-slate-800 dark:shadow-slate-950/20">
         <form onSubmit={handleSubmit} className="space-y-4">
           <FileUpload
             onFileSelect={setFile}
@@ -97,7 +97,7 @@ export default function UploadPage() {
             <button
               type="submit"
               disabled={loading || !file}
-              className="group relative flex-1 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 font-semibold text-white shadow-lg shadow-blue-500/30 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/40 disabled:scale-100 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-100 dark:from-blue-500 dark:to-indigo-500 dark:shadow-blue-500/20 dark:hover:shadow-blue-500/30"
+              className="group relative flex-1 overflow-hidden rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-md shadow-blue-500/20 transition-all duration-300 hover:scale-[1.01] hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/25 disabled:scale-100 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-100 dark:bg-blue-500 dark:shadow-blue-500/15 dark:hover:bg-blue-600 dark:hover:shadow-blue-500/20"
             >
               <span className="relative z-10 flex items-center justify-center gap-2">
                 {loading ? (
@@ -117,13 +117,10 @@ export default function UploadPage() {
                   </>
                 )}
               </span>
-              {!loading && !file && (
-                <span className="absolute inset-0 bg-gradient-to-r from-blue-700 to-indigo-700 opacity-0 transition-opacity group-hover:opacity-100"></span>
-              )}
             </button>
             <Link
               href="/"
-              className="rounded-xl border-2 border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-md transition-all duration-200 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:scale-95 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-100"
+              className="rounded-xl border-2 border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-md transition-all duration-200 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg hover:scale-[1.01] focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:scale-95 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-100"
             >
               Anuluj
             </Link>

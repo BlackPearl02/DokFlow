@@ -258,18 +258,18 @@ function MapPageContent() {
           Kliknij wiersz, aby wybrać go jako nagłówek. Następnie przypisz kolumny z pliku do pól ERP i pobierz CSV.
         </p>
       </div>
-      <div className="rounded-2xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50/80 via-indigo-50/50 to-white p-6 shadow-lg shadow-indigo-200/30 dark:border-indigo-800/80 dark:from-indigo-950/30 dark:via-indigo-900/20 dark:to-slate-900 dark:shadow-indigo-950/50">
+      <div className="rounded-2xl border border-slate-200/80 bg-slate-50 p-6 shadow-md shadow-slate-200/20 dark:border-slate-700/80 dark:bg-slate-800/50 dark:shadow-slate-950/20">
         <div className="flex items-start gap-3 mb-3">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400">
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
           <div className="flex-1">
-            <p className="font-semibold text-base text-indigo-900 dark:text-indigo-200 mb-3">Jak mapować kolumny:</p>
-            <ul className="space-y-2 text-sm text-indigo-800 dark:text-indigo-300">
+            <p className="font-semibold text-base text-slate-900 dark:text-slate-200 mb-3">Jak mapować kolumny:</p>
+            <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
               <li className="flex items-start gap-2">
-                <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500 dark:bg-indigo-400" aria-hidden />
+                <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-500 dark:bg-slate-400" aria-hidden />
                 <span><strong>Symbol (SKU)</strong> — wybierz kolumnę z kodem towaru (index) LUB kodem EAN</span>
               </li>
               <li className="flex items-start gap-2">
@@ -294,31 +294,31 @@ function MapPageContent() {
       </div>
 
       {exportDone ? (
-        <div className="rounded-3xl border border-green-200/80 bg-gradient-to-br from-green-50/80 via-green-50/50 to-white p-8 shadow-xl shadow-green-200/30 dark:border-green-800/80 dark:from-green-950/30 dark:via-green-900/20 dark:to-slate-900 dark:shadow-green-950/50" role="alert" aria-live="polite">
+        <div className="rounded-3xl border border-slate-200/80 bg-slate-50 p-8 shadow-md shadow-slate-200/20 dark:border-slate-700/80 dark:bg-slate-800/50 dark:shadow-slate-950/20" role="alert" aria-live="polite">
           <div className="animate-fade-in flex items-start gap-4 mb-6">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg shadow-green-500/30 dark:shadow-green-500/20">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-slate-700 text-white shadow-md shadow-slate-700/20 dark:bg-slate-600 dark:shadow-slate-600/20">
               <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
             </div>
             <div className="flex-1">
-              <p className="text-xl font-bold text-green-900 dark:text-green-200">Plik został pobrany.</p>
-              <p className="mt-2 text-base text-green-700 dark:text-green-300">
+              <p className="text-xl font-bold text-slate-900 dark:text-slate-200">Plik został pobrany.</p>
+              <p className="mt-2 text-base text-slate-700 dark:text-slate-300">
                 Wygenerowany plik CSV do importu PZ w Comarch Optima.
               </p>
             </div>
           </div>
-          <div className="mb-6 rounded-xl border border-green-200/50 bg-white/60 p-4 backdrop-blur-sm dark:border-green-900/30 dark:bg-slate-800/60">
-            <p className="text-sm font-semibold text-green-800 dark:text-green-300">✓ Dane zostały usunięte z pamięci.</p>
+          <div className="mb-6 rounded-xl border border-slate-200/50 bg-white p-4 dark:border-slate-700/50 dark:bg-slate-800">
+            <p className="text-sm font-semibold text-slate-800 dark:text-slate-300">✓ Dane zostały usunięte z pamięci.</p>
           </div>
-          <div className="mb-6 rounded-2xl border border-blue-200/80 bg-gradient-to-br from-blue-50/80 to-white p-6 shadow-lg shadow-blue-200/30 dark:border-blue-800/80 dark:from-blue-950/30 dark:to-slate-900 dark:shadow-blue-950/50">
-            <p className="text-base font-semibold text-blue-900 dark:text-blue-200 mb-2">Następny krok: Import do Optimy</p>
-            <p className="text-sm text-blue-700 dark:text-blue-300 mb-4">
+          <div className="mb-6 rounded-2xl border border-slate-200/80 bg-slate-50 p-6 shadow-md shadow-slate-200/20 dark:border-slate-700/80 dark:bg-slate-800/50 dark:shadow-slate-950/20">
+            <p className="text-base font-semibold text-slate-900 dark:text-slate-200 mb-2">Następny krok: Import do Optimy</p>
+            <p className="text-sm text-slate-700 dark:text-slate-300 mb-4">
               Pobrany plik CSV możesz zaimportować do dokumentu PZ (Przyjęcie Zewnętrzne) lub Faktury Zakupowej w Optimie.
             </p>
             <Link
               href="/instrukcja-importu"
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-100 dark:from-blue-500 dark:to-indigo-500 dark:shadow-blue-500/20 dark:hover:shadow-blue-500/30"
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:shadow-blue-500/25 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-100 dark:from-blue-500 dark:to-indigo-500 dark:shadow-blue-500/15 dark:hover:shadow-blue-500/20"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -329,7 +329,7 @@ function MapPageContent() {
           <div className="flex flex-wrap gap-4">
             <Link
               href="/upload"
-              className="group relative flex-1 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-100 dark:from-blue-500 dark:to-indigo-500 dark:shadow-blue-500/20 dark:hover:shadow-blue-500/30 sm:flex-initial"
+              className="group relative flex-1 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:shadow-blue-500/25 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-100 dark:from-blue-500 dark:to-indigo-500 dark:shadow-blue-500/15 dark:hover:shadow-blue-500/20 sm:flex-initial"
             >
               <span className="relative z-10 flex items-center justify-center gap-2">
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -341,7 +341,7 @@ function MapPageContent() {
             </Link>
             <Link
               href="/"
-              className="rounded-xl border-2 border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-md transition-all duration-200 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:scale-95 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-100"
+              className="rounded-xl border-2 border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-md transition-all duration-200 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg hover:scale-[1.01] focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:scale-95 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-100"
             >
               Strona główna
             </Link>
@@ -351,8 +351,8 @@ function MapPageContent() {
         <>
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_minmax(280px,360px)]">
             <div className="min-w-0">
-              <div className="mb-4 rounded-xl border-2 border-blue-400/80 bg-gradient-to-r from-blue-50/80 to-blue-100/50 px-5 py-4 shadow-md shadow-blue-200/30 dark:border-blue-600/80 dark:from-blue-950/30 dark:to-blue-900/20 dark:shadow-blue-950/50">
-                <p className="text-sm font-bold text-blue-900 dark:text-blue-200 flex items-center gap-2">
+              <div className="mb-4 rounded-xl border-2 border-slate-300 bg-slate-50 px-5 py-4 shadow-md shadow-slate-200/20 dark:border-slate-600 dark:bg-slate-800/50 dark:shadow-slate-950/20">
+                <p className="text-sm font-bold text-slate-900 dark:text-slate-200 flex items-center gap-2">
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
                   </svg>
@@ -461,7 +461,7 @@ function MapPageContent() {
                 />
                 <Link
                   href="/upload"
-                  className="rounded-xl border-2 border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-md transition-all duration-200 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:scale-95 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-100"
+                  className="rounded-xl border-2 border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-md transition-all duration-200 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg hover:scale-[1.01] focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:scale-95 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-100"
                 >
                   Anuluj — nowy plik
                 </Link>
