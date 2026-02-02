@@ -11,9 +11,12 @@ import { REQUIRED_FIELDS, type ErpField } from "@/lib/erp-schemas";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { sessionId, mappings } = body as {
+    const { sessionId, mappings, convertToPln, exchangeRate, currency } = body as {
       sessionId?: string;
       mappings?: Record<ErpField, number | null>;
+      convertToPln?: boolean;
+      exchangeRate?: number;
+      currency?: string;
     };
 
     if (!sessionId || !mappings) {
@@ -40,17 +43,18 @@ export async function POST(request: NextRequest) {
 
     const normalizedMappings: Record<ErpField, number | null> = {
       symbol: mappings.symbol ?? null,
-      nazwa: mappings.nazwa ?? null,
       ilosc: mappings.ilosc ?? null,
       cenaJedn: mappings.cenaJedn ?? null,
-      vat: mappings.vat ?? null,
-      waluta: mappings.waluta ?? null,
     };
 
     const csv = generateErpCsv(
       session.rawRows,
       session.headerRowIndex,
-      normalizedMappings
+      normalizedMappings,
+      {
+        convertToPln: convertToPln === true,
+        exchangeRate,
+      }
     );
 
     sessionStore.remove(sessionId);

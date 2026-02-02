@@ -25,7 +25,6 @@ const SKU_SYNONYMS = [
   "编号",
   "货号",
 ];
-const NAZWA_SYNONYMS = ["nazwa", "name", "nazwa towaru", "opis", "description", "产品", "名称"];
 const ILOSC_SYNONYMS = ["ilość", "ilosc", "qty", "quantity", "amount", "szt", "数量", "件"];
 const CENA_SYNONYMS = [
   "cena",
@@ -37,7 +36,6 @@ const CENA_SYNONYMS = [
   "单价",
   "价格",
 ];
-const VAT_SYNONYMS = ["vat", "tax", "podatek", "税率"];
 const WALUTA_SYNONYMS = ["waluta", "currency", "curr", "货币", "币种"];
 
 function normalize(s: string): string {
@@ -78,24 +76,15 @@ export function suggestMappings(rows: string[][], headerRowIndex: number): Sugge
     const isNumeric = columnLooksNumeric(columnValues, false);
 
     const confSymbol = matchHeaderConfidence(label, SKU_SYNONYMS);
-    const confNazwa = matchHeaderConfidence(label, NAZWA_SYNONYMS);
     const confIlosc = matchHeaderConfidence(label, ILOSC_SYNONYMS);
     const confCena = matchHeaderConfidence(label, CENA_SYNONYMS);
-    const confVat = matchHeaderConfidence(label, VAT_SYNONYMS);
-    const confWaluta = matchHeaderConfidence(label, WALUTA_SYNONYMS);
 
     if (confSymbol > 0 && !suggested.symbol) {
       suggested.symbol = { columnIndex: col, confidence: confSymbol };
-    } else if (confNazwa > 0 && !suggested.nazwa) {
-      suggested.nazwa = { columnIndex: col, confidence: confNazwa };
     } else if (confIlosc > 0 && !suggested.ilosc) {
       suggested.ilosc = { columnIndex: col, confidence: confIlosc };
     } else if (confCena > 0 && !suggested.cenaJedn) {
       suggested.cenaJedn = { columnIndex: col, confidence: confCena };
-    } else if (confVat > 0 && !suggested.vat) {
-      suggested.vat = { columnIndex: col, confidence: confVat };
-    } else if (confWaluta > 0 && !suggested.waluta) {
-      suggested.waluta = { columnIndex: col, confidence: confWaluta };
     } else {
       const typeOnlyConf = 0.55;
       if (isNumeric && !suggested.ilosc) {
@@ -124,4 +113,23 @@ export function getColumnLabels(rows: string[][], headerRowIndex: number): strin
     labels.push(label || `Kolumna ${c + 1}`);
   }
   return labels;
+}
+
+/**
+ * Find currency column index in the file (for currency conversion).
+ * Returns column index or null if not found.
+ */
+export function findCurrencyColumn(rows: string[][], headerRowIndex: number): number | null {
+  if (rows.length <= headerRowIndex) return null;
+  const headerRow = rows[headerRowIndex].map((c) => String(c ?? "").trim());
+  const columnCount = headerRow.length;
+
+  for (let col = 0; col < columnCount; col++) {
+    const label = headerRow[col] ?? `Kolumna ${col + 1}`;
+    const confWaluta = matchHeaderConfidence(label, WALUTA_SYNONYMS);
+    if (confWaluta > 0) {
+      return col;
+    }
+  }
+  return null;
 }

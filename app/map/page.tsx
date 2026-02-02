@@ -9,6 +9,7 @@ import { StepIndicator } from "@/components/StepIndicator";
 import type { ErpField } from "@/lib/erp-schemas";
 import { ERP_FIELDS, REQUIRED_FIELDS } from "@/lib/erp-schemas";
 import type { SuggestedMappings } from "@/lib/heuristics";
+import { findCurrencyColumn } from "@/lib/heuristics";
 
 const PREVIEW_ROWS = 20;
 const CONFIDENCE_PRESELECT_THRESHOLD = 0.7;
@@ -28,11 +29,8 @@ function columnIsNumeric(rows: string[][], colIndex: number, dataStart: number):
 function initialMappings(suggested: SuggestedMappings): Record<ErpField, number | null> {
   const m: Record<ErpField, number | null> = {
     symbol: null,
-    nazwa: null,
     ilosc: null,
     cenaJedn: null,
-    vat: null,
-    waluta: null,
   };
   for (const { id } of ERP_FIELDS) {
     const s = suggested[id];
@@ -53,11 +51,8 @@ function MapPageContent() {
   const [headerRowIndex, setHeaderRowIndex] = useState(0);
   const [mappings, setMappings] = useState<Record<ErpField, number | null>>({
     symbol: null,
-    nazwa: null,
     ilosc: null,
     cenaJedn: null,
-    vat: null,
-    waluta: null,
   });
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
@@ -65,6 +60,9 @@ function MapPageContent() {
   const [exportDone, setExportDone] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const [updatingHeader, setUpdatingHeader] = useState(false);
+  const [convertToPln, setConvertToPln] = useState(false);
+  const [currencyColumnIndex, setCurrencyColumnIndex] = useState<number | null>(null);
+  const [selectedCurrency, setSelectedCurrency] = useState<string>("PLN");
 
   useEffect(() => {
     if (!sessionId) {
@@ -89,6 +87,10 @@ function MapPageContent() {
         setHeaderRowIndex(data.headerRowIndex ?? 0);
         setFileName(data.fileName ?? null);
         setMappings(initialMappings(data.suggestedMappings ?? {}));
+        
+        // Znajdź kolumnę waluty
+        const currencyCol = findCurrencyColumn(data.previewRows ?? [], data.headerRowIndex ?? 0);
+        setCurrencyColumnIndex(currencyCol);
       } catch {
         if (!cancelled) setError("Błąd połączenia.");
       } finally {
@@ -124,6 +126,10 @@ function MapPageContent() {
       setSuggestedMappings(data.suggestedMappings ?? {});
       setHeaderRowIndex(data.headerRowIndex ?? 0);
       setMappings(initialMappings(data.suggestedMappings ?? {}));
+      
+      // Znajdź kolumnę waluty
+      const currencyCol = findCurrencyColumn(data.previewRows ?? [], data.headerRowIndex ?? 0);
+      setCurrencyColumnIndex(currencyCol);
     } catch {
       setError("Błąd połączenia.");
     } finally {
@@ -136,12 +142,39 @@ function MapPageContent() {
     setError(null);
     setExporting(true);
     try {
+      // Jeśli przewalutowanie jest włączone, pobierz kurs waluty
+      let exchangeRate: number | undefined;
+      const currency = selectedCurrency.toUpperCase();
+      
+      if (convertToPln && currency && currency !== "PLN") {
+        try {
+          const rateRes = await fetch(`/api/nbp-exchange-rate?currency=${encodeURIComponent(currency)}`);
+          const rateData = await rateRes.json();
+          if (rateRes.ok && rateData.rate) {
+            exchangeRate = rateData.rate;
+          } else {
+            setError(`Nie udało się pobrać kursu dla waluty ${currency}. ${rateData.error ?? ""}`);
+            setExporting(false);
+            return;
+          }
+        } catch (err) {
+          setError(`Błąd pobierania kursu waluty: ${err instanceof Error ? err.message : "Nieznany błąd"}`);
+          setExporting(false);
+          return;
+        }
+      } else if (currency === "PLN") {
+        exchangeRate = 1;
+      }
+      
       const res = await fetch("/api/export", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           sessionId,
           mappings,
+          convertToPln: convertToPln && exchangeRate != null,
+          exchangeRate,
+          currency: selectedCurrency,
         }),
       });
       const data = await res.json();
@@ -164,7 +197,7 @@ function MapPageContent() {
     } finally {
       setExporting(false);
     }
-  }, [sessionId, mappings]);
+  }, [sessionId, mappings, convertToPln, selectedCurrency]);
 
   if (loading) {
     return <div className="text-neutral-600">Ładowanie podglądu…</div>;
@@ -315,7 +348,13 @@ function MapPageContent() {
                 suggestedMappings={suggestedMappings}
                 mappings={mappings}
                 onMappingsChange={setMappings}
+                previewRows={previewRows}
+                headerRowIndex={headerRowIndex}
                 disabled={exporting}
+                convertToPln={convertToPln}
+                onConvertToPlnChange={setConvertToPln}
+                selectedCurrency={selectedCurrency}
+                onCurrencyChange={setSelectedCurrency}
               />
               {error && (
                 <p className="text-sm text-red-600" role="alert">
