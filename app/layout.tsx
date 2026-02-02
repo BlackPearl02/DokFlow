@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="pl" suppressHydrationWarning className="light">
       <body
-        className={`${inter.className} min-h-screen bg-neutral-50 text-neutral-900 antialiased dark:bg-slate-900 dark:text-slate-100`}
+        className={`${inter.className} min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 text-slate-900 antialiased dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:text-slate-100`}
       >
         <script
           suppressHydrationWarning
@@ -49,19 +49,24 @@ export default function RootLayout({
             `,
           }}
         />
-        <header className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
-          <div className="mx-auto max-w-4xl px-4 py-3 flex items-center justify-between">
-            <a
-              href="/"
-              className="text-lg font-semibold text-slate-800 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 rounded dark:text-slate-200 dark:hover:text-slate-300"
-            >
-              Dokflow
-            </a>
-            <ThemeToggle />
+        <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/80 backdrop-blur-md shadow-sm dark:border-slate-800/80 dark:bg-slate-950/80">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div className="flex h-16 items-center justify-between">
+              <a
+                href="/"
+                className="group flex items-center gap-2 text-xl font-bold text-slate-900 transition-colors hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 rounded-lg px-2 py-1 -ml-2 dark:text-slate-100 dark:hover:text-slate-200"
+              >
+                <span className="relative">
+                  <span className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 blur-xl transition-opacity group-hover:opacity-20 dark:from-blue-400 dark:to-indigo-400"></span>
+                  <span className="relative">Dokflow</span>
+                </span>
+              </a>
+              <ThemeToggle />
+            </div>
           </div>
           <LayoutWithSteps />
         </header>
-        <main className="mx-auto max-w-4xl px-4 py-8">{children}</main>
+        <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">{children}</main>
       </body>
     </html>
   );

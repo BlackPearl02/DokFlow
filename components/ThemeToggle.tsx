@@ -51,7 +51,7 @@ export function ThemeToggle() {
       <button
         type="button"
         aria-label="Przełącz motyw"
-        className="h-8 w-8 rounded p-1.5 text-slate-600 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 dark:text-slate-300 dark:hover:bg-slate-800"
+        className="relative h-10 w-10 rounded-xl border border-slate-200 bg-white/80 p-2 text-slate-600 backdrop-blur-sm transition-all hover:border-slate-300 hover:bg-slate-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:bg-slate-700"
       >
         <span className="sr-only">Ładowanie...</span>
       </button>
@@ -63,7 +63,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggleTheme}
       aria-label={theme === "light" ? "Włącz tryb ciemny" : "Włącz tryb jasny"}
-      className="h-8 w-8 rounded p-1.5 text-slate-600 transition-colors duration-200 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer"
+      className="group relative h-10 w-10 rounded-xl border border-slate-200 bg-white/80 p-2 text-slate-600 backdrop-blur-sm transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md hover:scale-105 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:scale-95 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:bg-slate-700 cursor-pointer"
       style={{ pointerEvents: "auto" }}
     >
       {theme === "light" ? (

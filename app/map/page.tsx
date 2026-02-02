@@ -250,59 +250,98 @@ function MapPageContent() {
   );
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
+    <div className="mx-auto max-w-6xl space-y-8">
       <StepIndicator currentStep={exportDone ? 3 : 2} fileName={fileName} />
-      <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">Mapuj i sprawdź</h1>
-      <p className="text-sm text-slate-600 dark:text-slate-300">
-        Kliknij wiersz, aby wybrać go jako nagłówek. Następnie przypisz kolumny z pliku do pól ERP i pobierz CSV.
-      </p>
-      <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-        <p className="font-medium mb-2">Jak mapować kolumny:</p>
-        <ul className="space-y-1 text-xs text-slate-600 dark:text-slate-400 list-inside list-disc">
-          <li><strong>Symbol (SKU)</strong> — wybierz kolumnę z kodem towaru (index) LUB kodem EAN</li>
-          <li>Jeśli w pliku masz <strong>index</strong> → mapuj do Symbol (index musi być w Optimie)</li>
-          <li>Jeśli w pliku masz <strong>EAN</strong> → mapuj do Symbol (EAN musi być w Optimie)</li>
-          <li><strong>Ilość</strong> — kolumna z ilością towaru (bez jednostki miary)</li>
-          <li><strong>Cena jedn.</strong> — kolumna z ceną jednostkową (netto lub brutto, zależnie od dokumentu)</li>
-        </ul>
+      <div>
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 sm:text-4xl">Mapuj i sprawdź</h1>
+        <p className="mt-3 text-base text-slate-600 dark:text-slate-300">
+          Kliknij wiersz, aby wybrać go jako nagłówek. Następnie przypisz kolumny z pliku do pól ERP i pobierz CSV.
+        </p>
+      </div>
+      <div className="rounded-2xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50/80 via-indigo-50/50 to-white p-6 shadow-lg shadow-indigo-200/30 dark:border-indigo-800/80 dark:from-indigo-950/30 dark:via-indigo-900/20 dark:to-slate-900 dark:shadow-indigo-950/50">
+        <div className="flex items-start gap-3 mb-3">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400">
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div className="flex-1">
+            <p className="font-semibold text-base text-indigo-900 dark:text-indigo-200 mb-3">Jak mapować kolumny:</p>
+            <ul className="space-y-2 text-sm text-indigo-800 dark:text-indigo-300">
+              <li className="flex items-start gap-2">
+                <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500 dark:bg-indigo-400" aria-hidden />
+                <span><strong>Symbol (SKU)</strong> — wybierz kolumnę z kodem towaru (index) LUB kodem EAN</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500 dark:bg-indigo-400" aria-hidden />
+                <span>Jeśli w pliku masz <strong>index</strong> → mapuj do Symbol (index musi być w Optimie)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500 dark:bg-indigo-400" aria-hidden />
+                <span>Jeśli w pliku masz <strong>EAN</strong> → mapuj do Symbol (EAN musi być w Optimie)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500 dark:bg-indigo-400" aria-hidden />
+                <span><strong>Ilość</strong> — kolumna z ilością towaru (bez jednostki miary)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500 dark:bg-indigo-400" aria-hidden />
+                <span><strong>Cena jedn.</strong> — kolumna z ceną jednostkową (netto lub brutto, zależnie od dokumentu)</span>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
 
       {exportDone ? (
-        <div className="rounded-lg border border-green-200 bg-green-50 p-6 text-green-800 dark:border-green-800 dark:bg-green-900/30 dark:text-green-200" role="alert" aria-live="polite">
-          <div className="animate-fade-in flex items-center gap-3">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-green-200 text-2xl font-medium text-green-800 dark:bg-green-900/50 dark:text-green-300">
-              ✓
-            </span>
-            <div>
-              <p className="font-medium">Plik został pobrany.</p>
-              <p className="mt-0.5 text-sm text-green-700 dark:text-green-300">
+        <div className="rounded-3xl border border-green-200/80 bg-gradient-to-br from-green-50/80 via-green-50/50 to-white p-8 shadow-xl shadow-green-200/30 dark:border-green-800/80 dark:from-green-950/30 dark:via-green-900/20 dark:to-slate-900 dark:shadow-green-950/50" role="alert" aria-live="polite">
+          <div className="animate-fade-in flex items-start gap-4 mb-6">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg shadow-green-500/30 dark:shadow-green-500/20">
+              <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <p className="text-xl font-bold text-green-900 dark:text-green-200">Plik został pobrany.</p>
+              <p className="mt-2 text-base text-green-700 dark:text-green-300">
                 Wygenerowany plik CSV do importu PZ w Comarch Optima.
               </p>
             </div>
           </div>
-          <p className="mt-4 text-sm font-medium">Dane zostały usunięte z pamięci.</p>
-          <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/30">
-            <p className="text-sm font-medium text-blue-900 dark:text-blue-200 mb-2">Następny krok: Import do Optimy</p>
-            <p className="text-xs text-blue-700 dark:text-blue-300 mb-3">
+          <div className="mb-6 rounded-xl border border-green-200/50 bg-white/60 p-4 backdrop-blur-sm dark:border-green-900/30 dark:bg-slate-800/60">
+            <p className="text-sm font-semibold text-green-800 dark:text-green-300">✓ Dane zostały usunięte z pamięci.</p>
+          </div>
+          <div className="mb-6 rounded-2xl border border-blue-200/80 bg-gradient-to-br from-blue-50/80 to-white p-6 shadow-lg shadow-blue-200/30 dark:border-blue-800/80 dark:from-blue-950/30 dark:to-slate-900 dark:shadow-blue-950/50">
+            <p className="text-base font-semibold text-blue-900 dark:text-blue-200 mb-2">Następny krok: Import do Optimy</p>
+            <p className="text-sm text-blue-700 dark:text-blue-300 mb-4">
               Pobrany plik CSV możesz zaimportować do dokumentu PZ (Przyjęcie Zewnętrzne) lub Faktury Zakupowej w Optimie.
             </p>
             <Link
               href="/instrukcja-importu"
-              className="inline-block rounded bg-blue-600 px-4 py-2 text-xs font-medium text-white transition-colors duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:bg-blue-800 dark:bg-blue-500 dark:hover:bg-blue-400 dark:active:bg-blue-300 dark:focus:ring-offset-slate-800"
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-100 dark:from-blue-500 dark:to-indigo-500 dark:shadow-blue-500/20 dark:hover:shadow-blue-500/30"
             >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
               Zobacz instrukcję importu do Optimy
             </Link>
           </div>
-          <div className="mt-4 flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-4">
             <Link
               href="/upload"
-              className="inline-block rounded bg-slate-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:bg-slate-800 dark:bg-slate-500 dark:hover:bg-slate-400 dark:active:bg-slate-300 dark:focus:ring-offset-slate-800"
+              className="group relative flex-1 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-100 dark:from-blue-500 dark:to-indigo-500 dark:shadow-blue-500/20 dark:hover:shadow-blue-500/30 sm:flex-initial"
             >
-              Nowa konwersja
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                Nowa konwersja
+              </span>
+              <span className="absolute inset-0 bg-gradient-to-r from-blue-700 to-indigo-700 opacity-0 transition-opacity group-hover:opacity-100"></span>
             </Link>
             <Link
               href="/"
-              className="inline-block rounded border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition-colors duration-200 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:bg-slate-100 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800 dark:active:bg-slate-700 dark:focus:ring-offset-slate-800"
+              className="rounded-xl border-2 border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-md transition-all duration-200 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:scale-95 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-100"
             >
               Strona główna
             </Link>
@@ -312,12 +351,15 @@ function MapPageContent() {
         <>
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_minmax(280px,360px)]">
             <div className="min-w-0">
-              <div className="mb-4 rounded-lg border-2 border-blue-400 bg-blue-50 px-4 py-3 dark:border-blue-600 dark:bg-blue-900/30">
-                <p className="text-sm font-semibold text-blue-900 dark:text-blue-200">
+              <div className="mb-4 rounded-xl border-2 border-blue-400/80 bg-gradient-to-r from-blue-50/80 to-blue-100/50 px-5 py-4 shadow-md shadow-blue-200/30 dark:border-blue-600/80 dark:from-blue-950/30 dark:to-blue-900/20 dark:shadow-blue-950/50">
+                <p className="text-sm font-bold text-blue-900 dark:text-blue-200 flex items-center gap-2">
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                  </svg>
                   Kliknij wiersz, aby wybrać go jako nagłówek tabeli
                 </p>
               </div>
-              <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
+              <div className="overflow-x-auto rounded-xl border border-slate-200/80 bg-white shadow-lg dark:border-slate-700/80 dark:bg-slate-800/80">
                 <table className="min-w-full text-sm" aria-label="Podgląd pierwszych 20 wierszy">
                   <tbody>
                     {displayRows.map((row, i) => {
@@ -398,7 +440,7 @@ function MapPageContent() {
                   {error}
                 </p>
               )}
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-4">
                 <DownloadButton
                   onClick={handleExport}
                   loading={exporting}
@@ -406,7 +448,7 @@ function MapPageContent() {
                 />
                 <Link
                   href="/upload"
-                  className="rounded border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition-colors duration-200 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:bg-slate-100 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800 dark:active:bg-slate-700 dark:focus:ring-offset-slate-800"
+                  className="rounded-xl border-2 border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-md transition-all duration-200 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 active:scale-95 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-100"
                 >
                   Anuluj — nowy plik
                 </Link>
