@@ -7,7 +7,7 @@ export default function LandingPage() {
       <section className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white px-6 py-12 shadow-sm sm:px-10 sm:py-16 md:py-20">
         <div className="relative z-10 mx-auto max-w-2xl text-center">
           <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
-            Konwerter PZ do Optima i Subiekt GT
+            Konwerter PZ do Optima
           </h1>
           <p className="mt-4 text-lg text-slate-600 sm:text-xl">
             Przekształć pliki od dostawcy (Excel, CSV) w gotowy CSV do importu dokumentów PZ w
@@ -52,8 +52,7 @@ export default function LandingPage() {
             </span>
             <h3 className="mt-4 font-semibold text-slate-900">Mapuj i sprawdź</h3>
             <p className="mt-2 text-sm text-slate-600">
-              Przypisz kolumny z pliku do pól ERP (symbol, ilość, cena itd.). Wybierz docelowy
-              system.
+              Przypisz kolumny z pliku do pól ERP (symbol, ilość, cena itd.).
             </p>
           </div>
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-md">
@@ -62,7 +61,7 @@ export default function LandingPage() {
             </span>
             <h3 className="mt-4 font-semibold text-slate-900">Eksport i pobierz</h3>
             <p className="mt-2 text-sm text-slate-600">
-              Pobierz wygenerowany plik CSV i zaimportuj go w Comarch Optima lub Subiekt GT.
+              Pobierz wygenerowany plik CSV i zaimportuj go w Comarch Optima.
             </p>
           </div>
         </div>
@@ -103,9 +102,6 @@ export default function LandingPage() {
         <div className="mt-6 flex flex-wrap gap-4">
           <div className="rounded-xl border border-slate-200 bg-white px-6 py-4 shadow-sm">
             <span className="font-medium text-slate-800">Comarch Optima</span>
-          </div>
-          <div className="rounded-xl border border-slate-200 bg-white px-6 py-4 shadow-sm">
-            <span className="font-medium text-slate-800">Subiekt GT</span>
           </div>
         </div>
       </section>

@@ -9,8 +9,6 @@ interface MappingFormProps {
   suggestedMappings: SuggestedMappings;
   mappings: Record<ErpField, number | null>;
   onMappingsChange: (mappings: Record<ErpField, number | null>) => void;
-  targetErp: "subiekt" | "optima";
-  onTargetErpChange: (target: "subiekt" | "optima") => void;
   disabled?: boolean;
 }
 
@@ -19,8 +17,6 @@ export function MappingForm({
   suggestedMappings,
   mappings,
   onMappingsChange,
-  targetErp,
-  onTargetErpChange,
   disabled,
 }: MappingFormProps) {
   const options = columnLabels.map((label, index) => (
@@ -38,22 +34,6 @@ export function MappingForm({
 
   return (
     <div className="space-y-4">
-      <div>
-        <label htmlFor="targetErp" className="mb-2 block text-sm font-medium text-slate-700">
-          Docelowy system ERP
-        </label>
-        <select
-          id="targetErp"
-          value={targetErp}
-          onChange={(e) => onTargetErpChange(e.target.value as "subiekt" | "optima")}
-          className="rounded border border-slate-300 bg-white px-3 py-2 text-sm transition-colors duration-200 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 disabled:opacity-70"
-          disabled={disabled}
-        >
-          <option value="subiekt">Subiekt GT</option>
-          <option value="optima">Comarch Optima</option>
-        </select>
-      </div>
-
       <div className="space-y-3">
         <p className="text-sm font-medium text-slate-700">Mapowanie kolumn</p>
         {ERP_FIELDS.map(({ id, label, required }) => {

@@ -4,7 +4,6 @@
  */
 
 import type { ErpField } from "./erp-schemas";
-import { CSV_HEADERS, ERP_FIELDS, type TargetErp } from "./erp-schemas";
 
 const SEP = ";";
 const BOM = "\uFEFF";
@@ -20,21 +19,25 @@ function escapeCsvCell(value: string): string {
 export function generateErpCsv(
   rows: string[][],
   headerRowIndex: number,
-  mappings: Record<ErpField, number | null>,
-  _targetErp: TargetErp
+  mappings: Record<ErpField, number | null>
 ): string {
-  const headerLine = ERP_FIELDS.map((f) => escapeCsvCell(CSV_HEADERS[f.id])).join(SEP);
   const dataRows = rows.slice(headerRowIndex + 1);
-  const lines: string[] = [headerLine];
+  const lines: string[] = [];
 
+  // Optima: bez nagłówka, format: symbol;ilosc;cenaJedn
   for (const row of dataRows) {
-    const cells: string[] = [];
-    for (const { id } of ERP_FIELDS) {
-      const col = mappings[id];
-      const value = col != null && col >= 0 ? (row[col] ?? "") : "";
-      cells.push(escapeCsvCell(value));
+    const symbolCol = mappings.symbol;
+    const iloscCol = mappings.ilosc;
+    const cenaCol = mappings.cenaJedn;
+    
+    const symbol = symbolCol != null && symbolCol >= 0 ? (row[symbolCol] ?? "") : "";
+    const ilosc = iloscCol != null && iloscCol >= 0 ? (row[iloscCol] ?? "") : "";
+    const cena = cenaCol != null && cenaCol >= 0 ? (row[cenaCol] ?? "") : "";
+    
+    // Tylko dodaj wiersz jeśli mamy wszystkie wymagane pola
+    if (symbol && ilosc && cena) {
+      lines.push(`${escapeCsvCell(symbol)}${SEP}${escapeCsvCell(ilosc)}${SEP}${escapeCsvCell(cena)}`);
     }
-    lines.push(cells.join(SEP));
   }
 
   return BOM + lines.join("\r\n");

@@ -59,7 +59,6 @@ function MapPageContent() {
     vat: null,
     waluta: null,
   });
-  const [targetErp, setTargetErp] = useState<"subiekt" | "optima">("optima");
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -111,7 +110,6 @@ function MapPageContent() {
         body: JSON.stringify({
           sessionId,
           mappings,
-          targetErp,
         }),
       });
       const data = await res.json();
@@ -125,7 +123,7 @@ function MapPageContent() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `PZ_import_${targetErp}.csv`;
+      a.download = `PZ_import_optima.csv`;
       a.click();
       URL.revokeObjectURL(url);
       setExportDone(true);
@@ -134,7 +132,7 @@ function MapPageContent() {
     } finally {
       setExporting(false);
     }
-  }, [sessionId, mappings, targetErp]);
+  }, [sessionId, mappings]);
 
   if (loading) {
     return <div className="text-neutral-600">Ładowanie podglądu…</div>;
@@ -167,8 +165,7 @@ function MapPageContent() {
       <StepIndicator currentStep={exportDone ? 3 : 2} fileName={fileName} />
       <h1 className="text-xl font-bold text-slate-900">Mapuj i sprawdź</h1>
       <p className="text-sm text-slate-600">
-        Sprawdź podgląd i przypisz kolumny z pliku do pól ERP. Następnie wybierz docelowy system i
-        pobierz CSV.
+        Sprawdź podgląd i przypisz kolumny z pliku do pól ERP. Następnie pobierz CSV.
       </p>
 
       {exportDone ? (
@@ -180,8 +177,7 @@ function MapPageContent() {
             <div>
               <p className="font-medium">Plik został pobrany.</p>
               <p className="mt-0.5 text-sm text-green-700">
-                Wygenerowany plik CSV do importu PZ w{" "}
-                {targetErp === "optima" ? "Comarch Optima" : "Subiekt GT"}.
+                Wygenerowany plik CSV do importu PZ w Comarch Optima.
               </p>
             </div>
           </div>
@@ -248,8 +244,6 @@ function MapPageContent() {
                 suggestedMappings={suggestedMappings}
                 mappings={mappings}
                 onMappingsChange={setMappings}
-                targetErp={targetErp}
-                onTargetErpChange={setTargetErp}
                 disabled={exporting}
               />
               {error && (

@@ -6,27 +6,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as sessionStore from "@/lib/session-store";
 import { generateErpCsv } from "@/lib/export-csv";
-import { REQUIRED_FIELDS, type ErpField, type TargetErp } from "@/lib/erp-schemas";
+import { REQUIRED_FIELDS, type ErpField } from "@/lib/erp-schemas";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { sessionId, mappings, targetErp } = body as {
+    const { sessionId, mappings } = body as {
       sessionId?: string;
       mappings?: Record<ErpField, number | null>;
-      targetErp?: TargetErp;
     };
 
-    if (!sessionId || !mappings || !targetErp) {
+    if (!sessionId || !mappings) {
       return NextResponse.json(
-        { error: "Brak sessionId, mappings lub targetErp." },
-        { status: 400 }
-      );
-    }
-
-    if (targetErp !== "subiekt" && targetErp !== "optima") {
-      return NextResponse.json(
-        { error: "Nieprawidłowy docelowy system (subiekt lub optima)." },
+        { error: "Brak sessionId lub mappings." },
         { status: 400 }
       );
     }
@@ -58,8 +50,7 @@ export async function POST(request: NextRequest) {
     const csv = generateErpCsv(
       session.rawRows,
       session.headerRowIndex,
-      normalizedMappings,
-      targetErp
+      normalizedMappings
     );
 
     sessionStore.remove(sessionId);

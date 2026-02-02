@@ -1,6 +1,6 @@
-# Dokflow — konwerter PZ do Optima / Subiekt GT
+# Dokflow — konwerter PZ do Optima
 
-Konwerter plików Excel/CSV od dostawców na gotowy CSV do importu PZ w **Comarch Optima** lub **Subiekt GT**. Język i rynek: polski.
+Konwerter plików Excel/CSV od dostawców na gotowy CSV do importu PZ w **Comarch Optima**. Język i rynek: polski.
 
 > **Licencja:** Projekt objęty licencją zastrzeżoną (proprietary). Wszelkie prawa zastrzeżone — bez pisemnej zgody autora nie wolno kopiować, modyfikować ani wykorzystywać tego kodu. Szczegóły: [LICENSE](LICENSE).
 
@@ -40,7 +40,7 @@ Aplikacja dostępna pod `http://localhost:3000`.
 
 - **Brak auth** — brak kont, profili, płatności.
 - **Brak zapisu mapowań** — mapowanie kolumn ustawiane jest przy każdej sesji (sugestie heurystyczne można potwierdzić lub zmienić).
-- **Jeden format wyjściowy CSV** — kolumny: Symbol, Nazwa, Ilość, Cena_jedn, VAT, Waluta (separator średnik, UTF-8 z BOM). Konkretne szablony importu w Subiekcie/Optimie mogą wymagać dopasowania nazw lub kolejności kolumn w ERP; MVP dostarcza „gotowy do edycji” CSV.
+- **Format wyjściowy CSV dla Optima** — bez nagłówka, format: `symbol;ilość;cena` (separator średnik, UTF-8 z BOM).
 - **Brak obsługi merged cells** i zaawansowanego formatowania Excela — parsowana jest tylko wartość komórek.
 - **Nagłówek w dowolnym wierszu** — użytkownik wybiera numer wiersza nagłówka (1-based); wiersze poniżej traktowane są jako dane.
 
@@ -54,7 +54,7 @@ Aplikacja dostępna pod `http://localhost:3000`.
 
 - **POST /api/parse** — `multipart/form-data`: plik + `headerRowIndex`. Zwraca `sessionId`, `previewRows`, `suggestedMappings`, `columnLabels`.
 - **GET /api/session?sessionId=...** — zwraca podgląd i sugestie dla strony mapowania (404 jeśli sesja nie istnieje).
-- **POST /api/export** — JSON: `sessionId`, `mappings`, `targetErp` (`subiekt` | `optima`). Zwraca `{ csv }`. Po odpowiedzi sesja jest usuwana.
+- **POST /api/export** — JSON: `sessionId`, `mappings`. Zwraca `{ csv }`. Po odpowiedzi sesja jest usuwana.
 
 ---
 

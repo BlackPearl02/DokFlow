@@ -9,9 +9,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Dokflow — konwerter PZ do Optima / Subiekt GT",
+  title: "Dokflow — konwerter PZ do Optima",
   description:
-    "Prześlij plik od dostawcy, ustaw mapowanie kolumn, pobierz CSV do importu PZ w Comarch Optima lub Subiekt GT.",
+    "Prześlij plik od dostawcy, ustaw mapowanie kolumn, pobierz CSV do importu PZ w Comarch Optima.",
 };
 
 export default function RootLayout({
