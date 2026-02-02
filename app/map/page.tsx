@@ -64,6 +64,7 @@ function MapPageContent() {
   const [error, setError] = useState<string | null>(null);
   const [exportDone, setExportDone] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [updatingHeader, setUpdatingHeader] = useState(false);
 
   useEffect(() => {
     if (!sessionId) {
@@ -98,6 +99,37 @@ function MapPageContent() {
       cancelled = true;
     };
   }, [sessionId]);
+
+  const handleHeaderRowClick = useCallback(async (rowIndex: number) => {
+    if (!sessionId || updatingHeader || rowIndex === headerRowIndex) return;
+    setUpdatingHeader(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/session", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId,
+          headerRowIndex: rowIndex,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Błąd aktualizacji nagłówka.");
+        setUpdatingHeader(false);
+        return;
+      }
+      setPreviewRows(data.previewRows ?? []);
+      setColumnLabels(data.columnLabels ?? []);
+      setSuggestedMappings(data.suggestedMappings ?? {});
+      setHeaderRowIndex(data.headerRowIndex ?? 0);
+      setMappings(initialMappings(data.suggestedMappings ?? {}));
+    } catch {
+      setError("Błąd połączenia.");
+    } finally {
+      setUpdatingHeader(false);
+    }
+  }, [sessionId, headerRowIndex, updatingHeader]);
 
   const handleExport = useCallback(async () => {
     if (!sessionId) return;
@@ -152,7 +184,8 @@ function MapPageContent() {
   }
 
   const dataStart = headerRowIndex + 1;
-  const displayRows = previewRows.slice(0, dataStart + PREVIEW_ROWS);
+  // Pokaż wszystkie wiersze przed dataStart oraz PREVIEW_ROWS wierszy danych
+  const displayRows = previewRows;
   const colCount = displayRows[0]?.length ?? 0;
   const numericCols = new Set(
     Array.from({ length: colCount }, (_, j) => j).filter((j) =>
@@ -165,8 +198,18 @@ function MapPageContent() {
       <StepIndicator currentStep={exportDone ? 3 : 2} fileName={fileName} />
       <h1 className="text-xl font-bold text-slate-900">Mapuj i sprawdź</h1>
       <p className="text-sm text-slate-600">
-        Sprawdź podgląd i przypisz kolumny z pliku do pól ERP. Następnie pobierz CSV.
+        Kliknij wiersz, aby wybrać go jako nagłówek. Następnie przypisz kolumny z pliku do pól ERP i pobierz CSV.
       </p>
+      <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+        <p className="font-medium mb-2">Jak mapować kolumny:</p>
+        <ul className="space-y-1 text-xs text-slate-600 list-inside list-disc">
+          <li><strong>Symbol (SKU)</strong> — wybierz kolumnę z kodem towaru (index) LUB kodem EAN</li>
+          <li>Jeśli w pliku masz <strong>index</strong> → mapuj do Symbol (index musi być w Optimie)</li>
+          <li>Jeśli w pliku masz <strong>EAN</strong> → mapuj do Symbol (EAN musi być w Optimie)</li>
+          <li><strong>Ilość</strong> — kolumna z ilością towaru (bez jednostki miary)</li>
+          <li><strong>Cena jedn.</strong> — kolumna z ceną jednostkową (netto lub brutto, zależnie od dokumentu)</li>
+        </ul>
+      </div>
 
       {exportDone ? (
         <div className="rounded-lg border border-green-200 bg-green-50 p-6 text-green-800">
@@ -182,6 +225,18 @@ function MapPageContent() {
             </div>
           </div>
           <p className="mt-4 text-sm font-medium">Dane zostały usunięte z pamięci.</p>
+          <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4">
+            <p className="text-sm font-medium text-blue-900 mb-2">Następny krok: Import do Optimy</p>
+            <p className="text-xs text-blue-700 mb-3">
+              Pobrany plik CSV możesz zaimportować do dokumentu PZ (Przyjęcie Zewnętrzne) lub Faktury Zakupowej w Optimie.
+            </p>
+            <Link
+              href="/instrukcja-importu"
+              className="inline-block rounded bg-blue-600 px-4 py-2 text-xs font-medium text-white transition-colors duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Zobacz instrukcję importu do Optimy
+            </Link>
+          </div>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link
               href="/upload"
@@ -201,42 +256,58 @@ function MapPageContent() {
         <>
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_minmax(280px,360px)]">
             <div className="min-w-0">
+              <div className="mb-2 text-xs text-slate-600">
+                Kliknij wiersz, aby wybrać go jako nagłówek tabeli
+              </div>
               <div className="overflow-x-auto rounded-lg border border-slate-200">
                 <table className="min-w-full text-sm" aria-label="Podgląd pierwszych 20 wierszy">
-                  <thead className="sticky top-0 z-10 border-b border-slate-200 bg-slate-100">
-                    {displayRows.slice(0, dataStart).map((row, i) => (
-                      <tr key={`h-${i}`}>
-                        {row.map((cell, j) => (
-                          <th
-                            key={j}
-                            scope="col"
-                            className={`px-3 py-2 font-medium text-slate-700 ${numericCols.has(j) ? "text-right tabular-nums" : "text-left"}`}
-                          >
-                            {String(cell || "").trim() || `Kolumna ${j + 1}`}
-                          </th>
-                        ))}
-                      </tr>
-                    ))}
-                  </thead>
                   <tbody>
-                    {displayRows.slice(dataStart).map((row, i) => (
-                      <tr
-                        key={i}
-                        className="border-b border-slate-100 transition-colors duration-150 hover:bg-slate-50"
-                      >
-                        {row.map((cell, j) => (
-                          <td
-                            key={j}
-                            className={`px-3 py-2 text-slate-800 ${numericCols.has(j) ? "text-right tabular-nums" : "text-left"}`}
-                          >
-                            {String(cell ?? "").trim()}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
+                    {displayRows.map((row, i) => {
+                      const isHeaderRow = i === headerRowIndex;
+                      const isBeforeData = i < dataStart;
+                      const isClickable = !updatingHeader;
+                      return (
+                        <tr
+                          key={i}
+                          onClick={() => isClickable && handleHeaderRowClick(i)}
+                          className={`
+                            border-b border-slate-100 transition-colors duration-150
+                            ${isHeaderRow 
+                              ? "bg-blue-100 border-blue-300 font-medium" 
+                              : isBeforeData 
+                                ? "bg-slate-50 hover:bg-slate-100" 
+                                : "hover:bg-slate-50"
+                            }
+                            ${isClickable && !isHeaderRow ? "cursor-pointer" : ""}
+                            ${updatingHeader ? "opacity-70" : ""}
+                          `}
+                          title={isHeaderRow ? "Wybrany wiersz nagłówka" : isClickable ? "Kliknij, aby wybrać jako nagłówek" : ""}
+                        >
+                          {row.map((cell, j) => {
+                            const CellTag = isBeforeData ? "th" : "td";
+                            return (
+                              <CellTag
+                                key={j}
+                                scope={isBeforeData ? "col" : undefined}
+                                className={`
+                                  px-3 py-2
+                                  ${isHeaderRow ? "text-blue-900" : isBeforeData ? "text-slate-700" : "text-slate-800"}
+                                  ${numericCols.has(j) ? "text-right tabular-nums" : "text-left"}
+                                `}
+                              >
+                                {String(cell || "").trim() || (isBeforeData ? `Kolumna ${j + 1}` : "")}
+                              </CellTag>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
+              {updatingHeader && (
+                <p className="mt-2 text-xs text-slate-600">Aktualizowanie nagłówka…</p>
+              )}
             </div>
             <div className="space-y-4">
               <MappingForm

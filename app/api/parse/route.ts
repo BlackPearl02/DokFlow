@@ -15,8 +15,6 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
-    const headerRowIndexRaw = formData.get("headerRowIndex");
-    const headerRowIndex = Math.max(0, parseInt(String(headerRowIndexRaw ?? "1"), 10) - 1);
 
     if (!file || file.size === 0) {
       return NextResponse.json({ error: "Brak pliku lub plik jest pusty." }, { status: 400 });
@@ -29,6 +27,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Plik nie zawiera danych." }, { status: 400 });
     }
 
+    // Domyślnie używamy pierwszego wiersza jako nagłówka (indeks 0)
+    const headerRowIndex = 0;
+
     const sessionId = randomUUID();
     sessionStore.set(sessionId, {
       rawRows: rows,
@@ -40,7 +41,10 @@ export async function POST(request: NextRequest) {
     const suggestedMappings = suggestMappings(rows, headerRowIndex);
     const columnLabels = getColumnLabels(rows, headerRowIndex);
     const dataStart = headerRowIndex + 1;
-    const previewRows = rows.slice(0, dataStart + PREVIEW_ROWS);
+    // Pokaż wszystkie wiersze przed dataStart + PREVIEW_ROWS wierszy danych
+    // Ale maksymalnie 100 wierszy, żeby nie przeciążać
+    const maxPreviewRows = Math.min(100, dataStart + PREVIEW_ROWS);
+    const previewRows = rows.slice(0, maxPreviewRows);
 
     return NextResponse.json({
       sessionId,

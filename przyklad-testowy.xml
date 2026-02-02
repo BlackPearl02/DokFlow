@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dokument>
+  <Naglowek>
+    <Data>2024-01-15</Data>
+    <Numer>FV/2024/001</Numer>
+  </Naglowek>
+  <Pozycje>
+    <Pozycja>
+      <Symbol>PROD001</Symbol>
+      <Nazwa>Laptop Dell Inspiron 15</Nazwa>
+      <Ilosc>5</Ilosc>
+      <CenaJedn>2499.99</CenaJedn>
+      <VAT>23</VAT>
+      <Waluta>PLN</Waluta>
+    </Pozycja>
+    <Pozycja>
+      <Symbol>PROD002</Symbol>
+      <Nazwa>Mysz bezprzewodowa Logitech</Nazwa>
+      <Ilosc>10</Ilosc>
+      <CenaJedn>89.50</CenaJedn>
+      <VAT>23</VAT>
+      <Waluta>PLN</Waluta>
+    </Pozycja>
+    <Pozycja>
+      <Symbol>5901234123457</Symbol>
+      <Nazwa>Kabel USB-C 2m</Nazwa>
+      <Ilosc>20</Ilosc>
+      <CenaJedn>25.99</CenaJedn>
+      <VAT>23</VAT>
+      <Waluta>PLN</Waluta>
+    </Pozycja>
+    <Pozycja>
+      <Symbol>PROD004</Symbol>
+      <Nazwa>Monitor LG 27 cali</Nazwa>
+      <Ilosc>2</Ilosc>
+      <CenaJedn>1299.00</CenaJedn>
+      <VAT>23</VAT>
+      <Waluta>PLN</Waluta>
+    </Pozycja>
+    <Pozycja>
+      <Symbol>PROD005</Symbol>
+      <Nazwa>Słuchawki Sony WH-1000XM4</Nazwa>
+      <Ilosc>4</Ilosc>
+      <CenaJedn>1299.99</CenaJedn>
+      <VAT>23</VAT>
+      <Waluta>PLN</Waluta>
+    </Pozycja>
+  </Pozycje>
+</Dokument>
+

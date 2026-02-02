@@ -32,8 +32,26 @@ export function MappingForm({
 
   const allRequiredMapped = REQUIRED_FIELDS.every((id) => mappings[id] != null);
 
+  // Sprawdź czy użytkownik mapuje symbol (index/EAN)
+  const symbolMapped = mappings.symbol != null;
+  const symbolLabel = symbolMapped ? columnLabels[mappings.symbol!]?.toLowerCase() || "" : "";
+  const hasIndex = symbolLabel.includes("index") || symbolLabel.includes("kod");
+  const hasEan = symbolLabel.includes("ean") || symbolLabel.includes("barcode") || symbolLabel.includes("kreskow");
+
   return (
     <div className="space-y-4">
+      {symbolMapped && (
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800">
+          <p className="font-medium">Ważne: Mapowanie identyfikatora towaru</p>
+          <p className="mt-1 text-xs text-blue-700">
+            {hasEan
+              ? "Mapujesz kolumnę z kodem EAN. Upewnij się, że kody EAN w pliku dokładnie odpowiadają kodom EAN w Optimie."
+              : hasIndex
+                ? "Mapujesz kolumnę z kodem/indexem. Upewnij się, że kody w pliku dokładnie odpowiadają kodom towarów w Optimie."
+                : "Upewnij się, że wartości w kolumnie Symbol dokładnie odpowiadają kodom towarów lub kodom EAN w Optimie. Optima rozpoznaje towary po kodzie, nazwie lub kodzie EAN."}
+          </p>
+        </div>
+      )}
       <div className="space-y-3">
         <p className="text-sm font-medium text-slate-700">Mapowanie kolumn</p>
         {ERP_FIELDS.map(({ id, label, required }) => {
@@ -87,9 +105,20 @@ export function MappingForm({
           );
         })}
         {!allRequiredMapped && (
-          <p className="text-sm text-amber-600">
-            Mapuj wymagane pola: Symbol (SKU), Ilość, Cena jedn.
-          </p>
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+            <p className="font-medium">Mapuj wymagane pola:</p>
+            <ul className="mt-1 list-inside list-disc space-y-0.5 text-xs text-amber-700">
+              <li>
+                <strong>Symbol (SKU)</strong> — kod towaru, index lub kod EAN (musi odpowiadać wartościom w Optimie)
+              </li>
+              <li>
+                <strong>Ilość</strong> — ilość towaru (bez separatora tysięcy)
+              </li>
+              <li>
+                <strong>Cena jedn.</strong> — cena jednostkowa (bez separatora tysięcy)
+              </li>
+            </ul>
+          </div>
         )}
       </div>
     </div>

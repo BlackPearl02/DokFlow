@@ -43,6 +43,13 @@ export function remove(sessionId: string): boolean {
   return store.delete(sessionId);
 }
 
+export function update(sessionId: string, updates: Partial<SessionData>): boolean {
+  const session = store.get(sessionId);
+  if (!session) return false;
+  store.set(sessionId, { ...session, ...updates });
+  return true;
+}
+
 function cleanup(): void {
   const now = Date.now();
   Array.from(store.entries()).forEach(([id, data]) => {

@@ -4,12 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FileUpload } from "@/components/FileUpload";
-import { HeaderRowSelect } from "@/components/HeaderRowSelect";
 
 export default function UploadPage() {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
-  const [headerRowIndex, setHeaderRowIndex] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,7 +22,6 @@ export default function UploadPage() {
     try {
       const formData = new FormData();
       formData.set("file", file);
-      formData.set("headerRowIndex", String(headerRowIndex));
       const res = await fetch("/api/parse", {
         method: "POST",
         body: formData,
@@ -46,8 +43,17 @@ export default function UploadPage() {
     <div className="mx-auto max-w-lg">
       <h1 className="text-xl font-bold text-slate-900">Prześlij plik</h1>
       <p className="mt-1 text-sm text-slate-600">
-        Obsługiwane formaty: XLSX, XLS, CSV, XML. Wybierz wiersz, w którym znajduje się nagłówek tabeli.
+        Obsługiwane formaty: XLSX, XLS, CSV, XML. W następnym kroku wybierzesz wiersz nagłówka.
       </p>
+      <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
+        <p className="font-medium mb-2">Wymagania dla importu do Optimy:</p>
+        <ul className="space-y-1.5 text-xs text-blue-700 list-inside list-disc">
+          <li>Plik musi zawierać kolumny z <strong>kodem towaru (index)</strong> lub <strong>kodem EAN</strong></li>
+          <li>Kody muszą <strong>dokładnie odpowiadać</strong> kodom w bazie Optimy</li>
+          <li>Wymagane kolumny: identyfikator towaru (index/EAN), ilość, cena</li>
+          <li>Nie używaj separatorów tysięcy (spacji) w liczbach</li>
+        </ul>
+      </div>
 
       <div className="mt-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -58,7 +64,6 @@ export default function UploadPage() {
             uploading={loading}
             errorMessage={error}
           />
-          <HeaderRowSelect value={headerRowIndex} onChange={setHeaderRowIndex} disabled={loading} />
           <p className="text-xs text-slate-500">
             Pliki są przetwarzane w pamięci i usuwane zaraz po eksporcie.
           </p>

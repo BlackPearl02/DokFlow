@@ -43,7 +43,7 @@ export default function LandingPage() {
             </span>
             <h3 className="mt-4 font-semibold text-slate-900">Prześlij plik</h3>
             <p className="mt-2 text-sm text-slate-600">
-              Wgraj plik od dostawcy w formacie XLSX, XLS lub CSV. Wskaż wiersz z nagłówkami.
+              Wgraj plik od dostawcy w formacie XLSX, XLS, CSV lub XML. Wskaż wiersz z nagłówkami.
             </p>
           </div>
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-md">
@@ -52,7 +52,7 @@ export default function LandingPage() {
             </span>
             <h3 className="mt-4 font-semibold text-slate-900">Mapuj i sprawdź</h3>
             <p className="mt-2 text-sm text-slate-600">
-              Przypisz kolumny z pliku do pól ERP (symbol, ilość, cena itd.).
+              Przypisz kolumny z pliku do pól ERP (symbol/index/EAN, ilość, cena). Kody muszą odpowiadać Optimie.
             </p>
           </div>
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-md">
@@ -61,7 +61,7 @@ export default function LandingPage() {
             </span>
             <h3 className="mt-4 font-semibold text-slate-900">Eksport i pobierz</h3>
             <p className="mt-2 text-sm text-slate-600">
-              Pobierz wygenerowany plik CSV i zaimportuj go w Comarch Optima.
+              Pobierz wygenerowany plik CSV i zaimportuj go w Comarch Optima. Zobacz instrukcję importu.
             </p>
           </div>
         </div>
@@ -113,19 +113,19 @@ export default function LandingPage() {
         <ul className="mt-6 space-y-3 text-sm text-slate-700">
           <li className="flex items-start gap-3">
             <span className="mt-1 shrink-0 text-green-600" aria-hidden>
-              ✓
+              •
             </span>
             <span>Przetwarzanie wyłącznie w pamięci</span>
           </li>
           <li className="flex items-start gap-3">
             <span className="mt-1 shrink-0 text-green-600" aria-hidden>
-              ✓
+              •
             </span>
             <span>Dane usuwane zaraz po eksporcie lub po upływie sesji</span>
           </li>
           <li className="flex items-start gap-3">
             <span className="mt-1 shrink-0 text-green-600" aria-hidden>
-              ✓
+              •
             </span>
             <span>Bez rejestracji i logowania</span>
           </li>
@@ -138,12 +138,20 @@ export default function LandingPage() {
         <p className="mt-2 text-slate-600">
           Prześlij pierwszy plik i pobierz CSV w kilku minutach.
         </p>
-        <Link
-          href="/upload"
-          className="mt-6 inline-block rounded-lg bg-slate-600 px-6 py-3 font-medium text-white shadow-sm transition-colors duration-200 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
-        >
-          Rozpocznij — prześlij plik
-        </Link>
+          <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <Link
+              href="/upload"
+              className="inline-block rounded-lg bg-slate-600 px-6 py-3 font-medium text-white shadow-sm transition-colors duration-200 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
+            >
+              Rozpocznij — prześlij plik
+            </Link>
+            <Link
+              href="/instrukcja-importu"
+              className="inline-block rounded-lg border border-slate-300 px-6 py-3 font-medium text-slate-700 shadow-sm transition-colors duration-200 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
+            >
+              Instrukcja importu do Optimy
+            </Link>
+          </div>
       </section>
     </div>
   );
