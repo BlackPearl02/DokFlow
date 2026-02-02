@@ -304,7 +304,7 @@ function MapPageContent() {
     } finally {
       setExporting(false);
     }
-  }, [sessionId, mappings, convertToPln, selectedCurrency]);
+  }, [sessionId, mappings, convertToPln, selectedCurrency, previewRows, headerRowIndex]);
 
   if (loading) {
     return (

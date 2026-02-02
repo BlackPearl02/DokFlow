@@ -216,7 +216,7 @@ export default function InstrukcjaImportuPage() {
           <li><strong>PZ (Przyjęcie Zewnętrzne)</strong> — moduł Magazyn</li>
           <li><strong>Faktura Zakupowa</strong> — moduł Księgowość</li>
           <li><strong>WZ (Wydanie Zewnętrzne)</strong> — moduł Magazyn</li>
-          <li>Inne dokumenty z opcją "Kolektor danych → Importuj pozycje"</li>
+          <li>Inne dokumenty z opcją &quot;Kolektor danych → Importuj pozycje&quot;</li>
         </ul>
         <div className="mt-4 rounded border border-blue-200 bg-blue-50 p-3 text-xs text-blue-800 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-200">
           <strong>Wskazówka:</strong> Ceny z pliku są traktowane jako netto lub brutto zgodnie z ustawieniami dokumentu (zależnie od tego, czy VAT liczony jest od netto czy od brutto).
@@ -229,7 +229,7 @@ export default function InstrukcjaImportuPage() {
         <div className="space-y-4 text-sm">
           <div>
             <h3 className="font-medium text-red-900 dark:text-red-200 mb-1">
-              Towar nie został zaimportowany / "Nie znaleziono pozycji"
+              Towar nie został zaimportowany / &quot;Nie znaleziono pozycji&quot;
             </h3>
             <ul className="ml-4 list-disc space-y-1 text-red-800 dark:text-red-300">
               <li>Sprawdź czy kod towaru w pliku <strong>dokładnie</strong> odpowiada kodowi w Optimie</li>
@@ -248,7 +248,7 @@ export default function InstrukcjaImportuPage() {
             </ul>
           </div>
           <div>
-            <h3 className="font-medium text-red-900 dark:text-red-200 mb-1">Opcja "Importuj pozycje" nie jest dostępna</h3>
+            <h3 className="font-medium text-red-900 dark:text-red-200 mb-1">Opcja &quot;Importuj pozycje&quot; nie jest dostępna</h3>
             <ul className="ml-4 list-disc space-y-1 text-red-800 dark:text-red-300">
               <li>Upewnij się, że dokument jest w buforze (niezatwierdzony)</li>
               <li>Funkcja nie działa na korektach, Fakturach Zaliczkowych i Dowodach Wewnętrznych Sprzedaży</li>
@@ -270,8 +270,8 @@ export default function InstrukcjaImportuPage() {
             <strong>Towary nieaktywne:</strong> Na dokument importowane są również towary oznaczone jako nieaktywne.
           </p>
           <p>
-            <strong>Kontrola ilości:</strong> Przy imporcie towarów z pliku nie działa parametr "Kontrola ilości na
-            dokumentach rozchodowych – przy akceptacji pozycji (przez bufor)".
+            <strong>Kontrola ilości:</strong> Przy imporcie towarów z pliku nie działa parametr &quot;Kontrola ilości na
+            dokumentach rozchodowych – przy akceptacji pozycji (przez bufor)&quot;.
           </p>
           <p>
             <strong>Dodatkowe dane:</strong> Wszystkie dodatkowe dane wpisane w pliku po cenie zostaną pominięte podczas

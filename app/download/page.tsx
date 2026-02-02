@@ -5,7 +5,7 @@ export default function DownloadPage() {
     <div className="space-y-4">
       <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">Eksport i pobierz</h1>
       <p className="text-slate-600 dark:text-slate-300">
-        Plik CSV generowany jest na stronie mapowania kolumn po kliknięciu „Generuj i pobierz CSV".
+        Plik CSV generowany jest na stronie mapowania kolumn po kliknięciu &quot;Generuj i pobierz CSV&quot;.
       </p>
       <p className="text-sm text-slate-500 dark:text-slate-400">Dane zostały usunięte z pamięci.</p>
       <Link
