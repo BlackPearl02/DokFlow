@@ -1,6 +1,6 @@
-# Dokflow — konwerter PZ do Optima
+# Dokflow — konwerter do Optima
 
-Konwerter plików Excel/CSV od dostawców na gotowy CSV do importu PZ w **Comarch Optima**. Język i rynek: polski.
+Konwerter plików Excel/CSV od dostawców na gotowy CSV do importu dokumentów w **Comarch Optima** przez kolektor danych. Język i rynek: polski.
 
 > **Licencja:** Projekt objęty licencją zastrzeżoną (proprietary). Wszelkie prawa zastrzeżone — bez pisemnej zgody autora nie wolno kopiować, modyfikować ani wykorzystywać tego kodu. Szczegóły: [LICENSE](LICENSE).
 

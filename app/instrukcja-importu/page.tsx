@@ -4,14 +4,15 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Instrukcja importu CSV do Comarch Optima",
   description:
-    "Dowiedz się jak zaimportować wygenerowany plik CSV do dokumentu PZ (Przyjęcie Zewnętrzne) lub Faktury Zakupowej w Comarch Optima. Krok po kroku z rozwiązywaniem problemów.",
+    "Dowiedz się jak zaimportować wygenerowany plik CSV do dokumentów w Comarch Optima przez kolektor danych. Krok po kroku z rozwiązywaniem problemów.",
   keywords: [
     "import CSV Optima",
-    "import PZ Optima",
+    "kolektor danych Optima",
     "Comarch Optima import",
     "instrukcja importu Optima",
     "jak zaimportować CSV do Optimy",
     "import pozycji Optima",
+    "import PZ Optima",
     "przyjęcie zewnętrzne import",
   ],
   alternates: {
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Instrukcja importu CSV do Comarch Optima — Dokflow",
     description:
-      "Dowiedz się jak zaimportować wygenerowany plik CSV do dokumentu PZ (Przyjęcie Zewnętrzne) lub Faktury Zakupowej w Comarch Optima. Krok po kroku z rozwiązywaniem problemów.",
+      "Dowiedz się jak zaimportować wygenerowany plik CSV do dokumentów w Comarch Optima przez kolektor danych. Krok po kroku z rozwiązywaniem problemów.",
     url: "/instrukcja-importu",
   },
 };
@@ -39,8 +40,8 @@ export default function InstrukcjaImportuPage() {
           Instrukcja importu pliku CSV do Comarch Optima
         </h1>
         <p className="mt-2 text-slate-600 dark:text-slate-300">
-          Dowiedz się jak zaimportować wygenerowany plik CSV do dokumentu PZ (Przyjęcie Zewnętrzne) lub
-          Faktury Zakupowej w Optimie.
+          Dowiedz się jak zaimportować wygenerowany plik CSV do dokumentów w Comarch Optima przez kolektor danych.
+          Instrukcja dotyczy wszystkich dokumentów obsługujących import pozycji (PZ, Faktura Zakupowa i inne).
         </p>
       </div>
 
@@ -63,7 +64,7 @@ export default function InstrukcjaImportuPage() {
           <li className="flex items-start gap-2">
             <span className="mt-0.5 shrink-0">•</span>
             <span>
-              <strong>Dokument w buforze</strong> — PZ lub Faktura Zakupowa musi być w stanie buforowym (niezatwierdzona)
+              <strong>Dokument w buforze</strong> — dokument musi być w stanie buforowym (niezatwierdzony)
             </span>
           </li>
           <li className="flex items-start gap-2">
@@ -106,21 +107,23 @@ export default function InstrukcjaImportuPage() {
         </div>
       </section>
 
-      {/* Import do PZ */}
+      {/* Import do dokumentów */}
       <section className="rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
-          Import do dokumentu PZ (Przyjęcie Zewnętrzne)
+          Import do dokumentu w Optimie
         </h2>
+        <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
+          Instrukcja dotyczy wszystkich dokumentów obsługujących import przez kolektor danych, takich jak: PZ (Przyjęcie Zewnętrzne), Faktura Zakupowa, WZ (Wydanie Zewnętrzne) i inne.
+        </p>
         <div className="space-y-4">
           <div className="flex gap-4">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-600 text-sm font-semibold text-white">
               1
             </div>
             <div className="flex-1">
-              <h3 className="font-medium text-slate-900 dark:text-slate-100">Otwórz dokument PZ</h3>
+              <h3 className="font-medium text-slate-900 dark:text-slate-100">Otwórz dokument</h3>
               <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-                W Optimie przejdź do modułu <strong>Magazyn</strong> i otwórz nowy dokument{" "}
-                <strong>Przyjęcie Zewnętrzne (PZ)</strong> lub edytuj istniejący dokument w buforze.
+                W Optimie otwórz odpowiedni moduł (np. <strong>Magazyn</strong> dla PZ, <strong>Księgowość</strong> dla Faktury Zakupowej) i otwórz nowy dokument lub edytuj istniejący dokument w buforze.
               </p>
             </div>
           </div>
@@ -201,24 +204,22 @@ export default function InstrukcjaImportuPage() {
         </div>
       </section>
 
-      {/* Import do Faktury Zakupowej */}
+      {/* Przykłady dokumentów */}
       <section className="rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
-          Import do Faktury Zakupowej
+          Przykłady dokumentów obsługujących import
         </h2>
         <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
-          Proces importu do Faktury Zakupowej jest identyczny jak dla dokumentu PZ:
+          Proces importu jest identyczny dla wszystkich dokumentów obsługujących kolektor danych:
         </p>
-        <ol className="ml-4 list-decimal space-y-2 text-sm text-slate-700 dark:text-slate-300">
-          <li>Otwórz dokument <strong>Faktura Zakupowa</strong> w buforze</li>
-          <li>Przejdź do zakładki <strong>[Ogólne]</strong></li>
-          <li>Wybierz <strong>Kolektor danych → Importuj pozycje</strong></li>
-          <li>Wskaż plik CSV i wybierz źródło ceny</li>
-          <li>Zatwierdź import</li>
-        </ol>
+        <ul className="ml-4 list-disc space-y-2 text-sm text-slate-700 dark:text-slate-300 mb-4">
+          <li><strong>PZ (Przyjęcie Zewnętrzne)</strong> — moduł Magazyn</li>
+          <li><strong>Faktura Zakupowa</strong> — moduł Księgowość</li>
+          <li><strong>WZ (Wydanie Zewnętrzne)</strong> — moduł Magazyn</li>
+          <li>Inne dokumenty z opcją "Kolektor danych → Importuj pozycje"</li>
+        </ul>
         <div className="mt-4 rounded border border-blue-200 bg-blue-50 p-3 text-xs text-blue-800 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-200">
-          <strong>Wskazówka:</strong> Dla Faktury Zakupowej ceny z pliku są traktowane jako netto (jeśli VAT liczony
-          od netto) lub brutto (jeśli VAT liczony od brutto), zgodnie z ustawieniami dokumentu.
+          <strong>Wskazówka:</strong> Ceny z pliku są traktowane jako netto lub brutto zgodnie z ustawieniami dokumentu (zależnie od tego, czy VAT liczony jest od netto czy od brutto).
         </div>
       </section>
 
@@ -308,13 +309,13 @@ export default function InstrukcjaImportuPage() {
             "@type": "HowTo",
             name: "Instrukcja importu pliku CSV do Comarch Optima",
             description:
-              "Krok po kroku instrukcja importu pliku CSV do dokumentu PZ (Przyjęcie Zewnętrzne) lub Faktury Zakupowej w Comarch Optima.",
+              "Krok po kroku instrukcja importu pliku CSV do dokumentów w Comarch Optima przez kolektor danych.",
             step: [
               {
                 "@type": "HowToStep",
                 position: 1,
-                name: "Otwórz dokument PZ",
-                text: "W Optimie przejdź do modułu Magazyn i otwórz nowy dokument Przyjęcie Zewnętrzne (PZ) lub edytuj istniejący dokument w buforze.",
+                name: "Otwórz dokument",
+                text: "W Optimie otwórz odpowiedni moduł i otwórz nowy dokument lub edytuj istniejący dokument w buforze.",
               },
               {
                 "@type": "HowToStep",

@@ -188,7 +188,7 @@ function MapPageContent() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `PZ_import_optima.csv`;
+      a.download = `import_optima.csv`;
       a.click();
       URL.revokeObjectURL(url);
       setExportDone(true);
@@ -304,7 +304,7 @@ function MapPageContent() {
             <div className="flex-1">
               <p className="text-xl font-bold text-slate-900 dark:text-slate-200">Plik został pobrany.</p>
               <p className="mt-2 text-base text-slate-700 dark:text-slate-300">
-                Wygenerowany plik CSV do importu PZ w Comarch Optima.
+                Wygenerowany plik CSV do importu dokumentów w Comarch Optima przez kolektor danych.
               </p>
             </div>
           </div>
@@ -314,7 +314,7 @@ function MapPageContent() {
           <div className="mb-6 rounded-2xl border border-slate-200/80 bg-slate-50 p-6 shadow-md shadow-slate-200/20 dark:border-slate-700/80 dark:bg-slate-800/50 dark:shadow-slate-950/20">
             <p className="text-base font-semibold text-slate-900 dark:text-slate-200 mb-2">Następny krok: Import do Optimy</p>
             <p className="text-sm text-slate-700 dark:text-slate-300 mb-4">
-              Pobrany plik CSV możesz zaimportować do dokumentu PZ (Przyjęcie Zewnętrzne) lub Faktury Zakupowej w Optimie.
+              Pobrany plik CSV możesz zaimportować do dokumentów w Comarch Optima przez kolektor danych (PZ, Faktura Zakupowa, WZ i inne).
             </p>
             <Link
               href="/instrukcja-importu"

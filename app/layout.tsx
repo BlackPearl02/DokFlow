@@ -12,20 +12,22 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://dokflow.pl"),
   title: {
-    default: "Dokflow — konwerter PZ do Optima",
+    default: "Dokflow — konwerter do Optima",
     template: "%s | Dokflow",
   },
   description:
-    "Przekształć pliki od dostawcy (Excel, CSV, XML) w gotowy CSV do importu dokumentów PZ w Comarch Optima. Bez rejestracji, szybko i bezpiecznie.",
+    "Przekształć pliki od dostawcy (Excel, CSV, XML) w gotowy CSV do importu dokumentów w Comarch Optima przez kolektor danych. Bez rejestracji, szybko i bezpiecznie.",
   keywords: [
-    "konwerter PZ",
-    "import PZ Optima",
+    "konwerter Optima",
+    "import Optima",
     "Comarch Optima",
     "konwersja CSV",
     "import dokumentów",
-    "przyjęcie zewnętrzne",
+    "kolektor danych Optima",
     "konwerter Excel do CSV",
     "import faktur Optima",
+    "import PZ Optima",
+    "przyjęcie zewnętrzne",
   ],
   authors: [{ name: "Dokflow" }],
   creator: "Dokflow",
@@ -40,15 +42,15 @@ export const metadata: Metadata = {
     locale: "pl_PL",
     url: "/",
     siteName: "Dokflow",
-    title: "Dokflow — konwerter PZ do Optima",
+    title: "Dokflow — konwerter do Optima",
     description:
-      "Przekształć pliki od dostawcy (Excel, CSV, XML) w gotowy CSV do importu dokumentów PZ w Comarch Optima. Bez rejestracji, szybko i bezpiecznie.",
+      "Przekształć pliki od dostawcy (Excel, CSV, XML) w gotowy CSV do importu dokumentów w Comarch Optima przez kolektor danych. Bez rejestracji, szybko i bezpiecznie.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dokflow — konwerter PZ do Optima",
+    title: "Dokflow — konwerter do Optima",
     description:
-      "Przekształć pliki od dostawcy (Excel, CSV, XML) w gotowy CSV do importu dokumentów PZ w Comarch Optima. Bez rejestracji, szybko i bezpiecznie.",
+      "Przekształć pliki od dostawcy (Excel, CSV, XML) w gotowy CSV do importu dokumentów w Comarch Optima przez kolektor danych. Bez rejestracji, szybko i bezpiecznie.",
   },
   robots: {
     index: true,
@@ -122,7 +124,7 @@ export default function RootLayout({
               applicationCategory: "BusinessApplication",
               operatingSystem: "Web",
               description:
-                "Konwerter plików Excel, CSV i XML do formatu CSV zgodnego z importem dokumentów PZ (Przyjęcie Zewnętrzne) w Comarch Optima. Bez rejestracji, przetwarzanie w pamięci, dane usuwane po eksporcie.",
+                "Konwerter plików Excel, CSV i XML do formatu CSV zgodnego z importem dokumentów w Comarch Optima przez kolektor danych. Bez rejestracji, przetwarzanie w pamięci, dane usuwane po eksporcie.",
               offers: {
                 "@type": "Offer",
                 price: "0",

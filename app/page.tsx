@@ -2,16 +2,16 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Konwerter PZ do Optima — Dokflow",
+  title: "Konwerter do Optima — Dokflow",
   description:
-    "Przekształć pliki od dostawcy (Excel, CSV, XML) w gotowy CSV do importu dokumentów PZ w Comarch Optima. Bez rejestracji, szybko i bezpiecznie. Obsługiwane formaty: XLSX, XLS, CSV, XML.",
+    "Przekształć pliki od dostawcy (Excel, CSV, XML) w gotowy CSV do importu dokumentów w Comarch Optima przez kolektor danych. Bez rejestracji, szybko i bezpiecznie. Obsługiwane formaty: XLSX, XLS, CSV, XML.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Konwerter PZ do Optima — Dokflow",
+    title: "Konwerter do Optima — Dokflow",
     description:
-      "Przekształć pliki od dostawcy (Excel, CSV, XML) w gotowy CSV do importu dokumentów PZ w Comarch Optima. Bez rejestracji, szybko i bezpiecznie.",
+      "Przekształć pliki od dostawcy (Excel, CSV, XML) w gotowy CSV do importu dokumentów w Comarch Optima przez kolektor danych. Bez rejestracji, szybko i bezpiecznie.",
     url: "/",
   },
 };
@@ -30,11 +30,11 @@ export default function LandingPage() {
             <span>Szybka konwersja bez rejestracji</span>
           </div>
           <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 sm:text-5xl md:text-6xl lg:text-7xl">
-            Konwerter PZ do Optima
+            Konwerter do Optima
           </h1>
           <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300 sm:text-xl">
-            Przekształć pliki od dostawcy (Excel, CSV) w gotowy CSV do importu dokumentów PZ w
-            polskich systemach ERP. <span className="font-semibold text-slate-700 dark:text-slate-200">Bez rejestracji.</span>
+            Przekształć pliki od dostawcy (Excel, CSV, XML) w gotowy CSV do importu dokumentów w Comarch Optima przez kolektor danych.
+            <span className="font-semibold text-slate-700 dark:text-slate-200"> Bez rejestracji.</span>
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
@@ -157,7 +157,7 @@ export default function LandingPage() {
           <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 sm:text-4xl">
             Obsługiwane systemy ERP
           </h2>
-          <p className="mt-4 text-lg text-slate-600 dark:text-slate-300">Eksport do formatu CSV zgodnego z importem PZ w:</p>
+          <p className="mt-4 text-lg text-slate-600 dark:text-slate-300">Eksport do formatu CSV zgodnego z importem przez kolektor danych w:</p>
         </div>
         <div className="mt-8 flex flex-wrap justify-center gap-4">
           <div className="group rounded-2xl border-2 border-slate-200/80 bg-white px-8 py-6 shadow-md shadow-slate-200/20 transition-all duration-300 hover:scale-[1.01] hover:border-slate-300 hover:shadow-lg dark:border-slate-700/80 dark:bg-slate-800 dark:shadow-slate-950/20 dark:hover:border-slate-600">
