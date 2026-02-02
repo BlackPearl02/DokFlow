@@ -69,6 +69,63 @@ Vercel Analytics jest już zintegrowany w aplikacji. Po deployu na Vercel:
 - Dane będą dostępne w Vercel Dashboard
 - Nie wymaga dodatkowej konfiguracji
 
+## Analytics z Supabase
+
+Aplikacja używa Supabase do trackowania szczegółowych eventów użytkowników (upload plików, eksport CSV, błędy).
+
+### Konfiguracja Supabase
+
+1. **Utwórz projekt na Supabase**:
+   - Zaloguj się do [Supabase](https://supabase.com)
+   - Utwórz nowy projekt (lub użyj istniejącego)
+
+2. **Utwórz tabelę analytics_events**:
+   - Otwórz SQL Editor w Supabase Dashboard
+   - Uruchom migrację z pliku `supabase-migration.sql`:
+     ```sql
+     -- Skopiuj zawartość supabase-migration.sql i uruchom w SQL Editor
+     ```
+
+3. **Pobierz klucze API**:
+   - W ustawieniach projektu → API
+   - Skopiuj:
+     - **Project URL** (`NEXT_PUBLIC_SUPABASE_URL`)
+     - **Service Role Key** (`SUPABASE_SERVICE_ROLE_KEY`) — **UWAGA**: To jest sekretny klucz, nie udostępniaj go publicznie!
+
+4. **Skonfiguruj zmienne środowiskowe na Vercel**:
+   - W ustawieniach projektu na Vercel → Environment Variables
+   - Dodaj:
+     - `NEXT_PUBLIC_SUPABASE_URL` — URL projektu Supabase
+     - `SUPABASE_SERVICE_ROLE_KEY` — Service Role Key (sekretny)
+
+5. **Lokalnie** (opcjonalnie):
+   - Utwórz plik `.env.local`:
+     ```env
+     NEXT_PUBLIC_SUPABASE_URL=https://twoj-projekt.supabase.co
+     SUPABASE_SERVICE_ROLE_KEY=twoj-service-role-key
+     ```
+
+### Trackowane eventy
+
+Aplikacja automatycznie trackuje:
+- `file_uploaded` — upload pliku (typ, rozmiar, rozszerzenie)
+- `csv_exported` — eksport CSV (waluta, przewalutowanie, liczba wierszy)
+- `header_row_changed` — zmiana wiersza nagłówka
+- `parse_error` — błędy parsowania plików
+
+### Wyświetlanie danych
+
+Dane są zapisywane w tabeli `analytics_events` w Supabase. Możesz:
+- Otworzyć Table Editor w Supabase Dashboard
+- Utworzyć własne zapytania SQL
+- Eksportować dane do CSV/Excel
+- Utworzyć dashboard w Supabase (opcjonalnie)
+
+### Wyłączenie analytics
+
+Aby wyłączyć tracking w development:
+- Dodaj do `.env.local`: `NEXT_PUBLIC_DISABLE_ANALYTICS=true`
+
 ### Build lokalny
 
 Aby przetestować build przed deployem:

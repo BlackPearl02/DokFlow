@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FileUpload } from "@/components/FileUpload";
+import { trackFileUpload, trackParseError } from "@/lib/analytics";
 
 export default function UploadPage() {
   const router = useRouter();
@@ -28,12 +29,18 @@ export default function UploadPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Błąd parsowania pliku.");
+        const errorMsg = data.error ?? "Błąd parsowania pliku.";
+        setError(errorMsg);
+        trackParseError(errorMsg, file.name);
         return;
       }
+      // Trackowanie udanego uploadu
+      trackFileUpload(file.name, file.type, file.size);
       router.push(`/map?sessionId=${data.sessionId}`);
-    } catch {
-      setError("Błąd połączenia.");
+    } catch (err) {
+      const errorMsg = "Błąd połączenia.";
+      setError(errorMsg);
+      trackParseError(errorMsg, file?.name);
     } finally {
       setLoading(false);
     }

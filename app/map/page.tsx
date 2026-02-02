@@ -10,6 +10,7 @@ import type { ErpField } from "@/lib/erp-schemas";
 import { ERP_FIELDS, REQUIRED_FIELDS } from "@/lib/erp-schemas";
 import type { SuggestedMappings } from "@/lib/heuristics";
 import { findCurrencyColumn } from "@/lib/heuristics";
+import { trackCsvExport, trackHeaderRowChange, trackParseError } from "@/lib/analytics";
 
 const PREVIEW_ROWS = 20;
 const CONFIDENCE_PRESELECT_THRESHOLD = 0.7;
@@ -224,6 +225,9 @@ function MapPageContent() {
       // Znajdź kolumnę waluty
       const currencyCol = findCurrencyColumn(data.previewRows ?? [], data.headerRowIndex ?? 0);
       setCurrencyColumnIndex(currencyCol);
+      
+      // Trackowanie zmiany nagłówka
+      await trackHeaderRowChange(data.headerRowIndex ?? 0);
     } catch {
       setError("Błąd połączenia.");
     } finally {
@@ -286,6 +290,15 @@ function MapPageContent() {
       a.click();
       URL.revokeObjectURL(url);
       setExportDone(true);
+      
+      // Trackowanie udanego eksportu
+      const rowCount = previewRows.length - (headerRowIndex + 1);
+      await trackCsvExport({
+        convertToPln,
+        currency: selectedCurrency,
+        exchangeRate,
+        rowCount: rowCount > 0 ? rowCount : undefined,
+      });
     } catch {
       setError("Błąd połączenia.");
     } finally {

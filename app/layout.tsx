@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { Suspense } from "react";
 import "./globals.css";
 import { LayoutWithSteps } from "@/components/LayoutWithSteps";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
@@ -115,6 +117,9 @@ export default function RootLayout({
           <LayoutWithSteps />
         </header>
         <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">{children}</main>
+        <Suspense fallback={null}>
+          <AnalyticsTracker />
+        </Suspense>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
