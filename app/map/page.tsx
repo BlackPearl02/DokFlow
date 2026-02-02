@@ -365,7 +365,8 @@ function MapPageContent() {
                     {displayRows.map((row, i) => {
                       const isHeaderRow = i === headerRowIndex;
                       const isBeforeData = i < dataStart;
-                      const isClickable = !updatingHeader && !isHeaderRow;
+                      // Pozwól klikać wszystkie wiersze, które nie są już nagłówkiem (ograniczenie do pierwszych 20 wierszy, żeby nie klikać w dane)
+                      const isClickable = !updatingHeader && !isHeaderRow && i < 20;
                       return (
                         <tr
                           key={i}
@@ -373,12 +374,19 @@ function MapPageContent() {
                             border-b border-slate-100 dark:border-slate-700 transition-colors duration-150
                             ${isHeaderRow 
                               ? "bg-blue-100 border-blue-300 dark:bg-blue-900/40 dark:border-blue-700 font-medium" 
-                              : isBeforeData 
-                                ? "bg-slate-50 dark:bg-slate-800" 
-                                : ""
+                              : isClickable
+                                ? "bg-slate-50 dark:bg-slate-800 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700" 
+                                : isBeforeData
+                                  ? "bg-slate-50 dark:bg-slate-800"
+                                  : ""
                             }
                             ${updatingHeader ? "opacity-70" : ""}
                           `}
+                          onClick={isClickable ? (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleHeaderRowClick(i);
+                          } : undefined}
                         >
                           {row.map((cell, j) => {
                             const CellTag = isBeforeData ? "th" : "td";
@@ -392,14 +400,19 @@ function MapPageContent() {
                                   ${numericCols.has(j) ? "text-right tabular-nums" : "text-left"}
                                 `}
                               >
-                                {isClickable && isBeforeData ? (
+                                {isClickable ? (
                                   <button
                                     type="button"
-                                    onClick={() => handleHeaderRowClick(i)}
-                                    disabled={updatingHeader}
-                                    className="w-full text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded px-1 -mx-1 py-0.5 -my-0.5 transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-70"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      handleHeaderRowClick(i);
+                                    }}
+                                    disabled={updatingHeader || i === headerRowIndex}
+                                    className="w-full text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded px-1 -mx-1 py-0.5 -my-0.5 transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-70 cursor-pointer"
                                     aria-label={`Wybierz wiersz ${i + 1} jako nagłówek tabeli`}
                                     aria-pressed={isHeaderRow}
+                                    style={{ pointerEvents: 'auto' }}
                                   >
                                     {String(cell || "").trim() || `Kolumna ${j + 1}`}
                                   </button>

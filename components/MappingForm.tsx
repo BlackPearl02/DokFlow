@@ -169,7 +169,7 @@ export function MappingForm({
                         aria-invalid={hasError}
                         aria-describedby={hasError ? `map-${id}-error` : undefined}
                       >
-                        <option value="">— nie mapuj —</option>
+                        <option value="">Wybierz</option>
                         {options}
                       </select>
                       {hasError && (
