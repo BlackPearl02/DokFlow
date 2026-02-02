@@ -13,7 +13,7 @@ const STEPS = [
 
 export function StepIndicator({ currentStep, fileName }: StepIndicatorProps) {
   return (
-    <div className="border-b border-slate-200 bg-white px-4 py-3">
+    <div className="border-b border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-950">
       <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-x-6 gap-y-2">
         <nav aria-label="Postęp" className="flex items-center gap-2">
           {STEPS.map(({ num, label }) => {
@@ -25,13 +25,13 @@ export function StepIndicator({ currentStep, fileName }: StepIndicatorProps) {
                 className="flex items-center gap-2 text-sm"
                 aria-current={isActive ? "step" : undefined}
               >
-                {num > 1 && <span className="h-px w-4 bg-slate-200" aria-hidden />}
+                {num > 1 && <span className="h-px w-4 bg-slate-200 dark:bg-slate-700" aria-hidden />}
                 <span
                   className={`
                     flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-medium transition-colors duration-200
-                    ${isCompleted ? "bg-slate-600 text-white" : ""}
-                    ${isActive ? "bg-slate-600 text-white ring-2 ring-slate-600 ring-offset-2" : ""}
-                    ${!isActive && !isCompleted ? "bg-slate-100 text-slate-500" : ""}
+                    ${isCompleted ? "bg-slate-600 text-white dark:bg-slate-500" : ""}
+                    ${isActive ? "bg-slate-600 text-white ring-2 ring-slate-600 ring-offset-2 dark:bg-slate-500 dark:ring-slate-400 dark:ring-offset-slate-950" : ""}
+                    ${!isActive && !isCompleted ? "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400" : ""}
                   `}
                 >
                   {isCompleted ? (
@@ -45,10 +45,10 @@ export function StepIndicator({ currentStep, fileName }: StepIndicatorProps) {
                 <span
                   className={
                     isActive
-                      ? "font-medium text-slate-800"
+                      ? "font-medium text-slate-800 dark:text-slate-200"
                       : isCompleted
-                        ? "text-slate-600"
-                        : "text-slate-400"
+                        ? "text-slate-600 dark:text-slate-300"
+                        : "text-slate-400 dark:text-slate-500"
                   }
                 >
                   {label}
@@ -58,7 +58,7 @@ export function StepIndicator({ currentStep, fileName }: StepIndicatorProps) {
           })}
         </nav>
         {currentStep === 2 && fileName && (
-          <span className="text-sm text-slate-500">Plik: {fileName}</span>
+          <span className="text-sm text-slate-500 dark:text-slate-400">Plik: {fileName}</span>
         )}
       </div>
     </div>

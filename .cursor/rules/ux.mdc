@@ -1,0 +1,46 @@
+# UX Rules
+
+## Design Philosophy
+
+1. **Professional, not generic AI template**
+   - Avoid overused gradients, excessive shadows, or "startup" clichés
+   - Use subtle animations, not flashy effects
+   - Typography and spacing create hierarchy, not decoration
+
+2. **Dark mode is first-class**
+   - All components work perfectly in dark mode
+   - Test both light and dark themes
+   - Color contrast meets WCAG AA standards
+
+3. **Micro-interactions matter**
+   - Hover states on interactive elements
+   - Loading states for async operations
+   - Smooth page transitions (not jarring)
+   - Button press feedback
+
+4. **Accessibility is non-negotiable**
+   - Semantic HTML (use `<button>`, not `<div>`)
+   - ARIA labels where needed
+   - Keyboard navigation works everywhere
+   - Focus states are visible
+
+5. **Performance = UX**
+   - Images optimized (WebP/AVIF)
+   - Code splitting for routes
+   - Lazy load below-the-fold content
+   - Fast Time to Interactive (< 3s)
+
+## Component Guidelines
+
+- Buttons: Clear hierarchy (primary, secondary, ghost)
+- Forms: Inline validation, clear error messages
+- Cards: Subtle hover effects, not overwhelming
+- Navigation: Clear active states, breadcrumbs where needed
+
+## Anti-patterns to avoid
+
+- Buttons that look like links (or vice versa)
+- Forms without validation feedback
+- Loading spinners that never stop
+- Modals without escape key support
+- Infinite scroll without pagination option

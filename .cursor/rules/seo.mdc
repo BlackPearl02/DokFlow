@@ -1,0 +1,78 @@
+# SEO Rules
+
+## Core Principles
+
+1. **Every page must have unique, descriptive metadata**
+   - Title: 50-60 characters, includes brand name "Dokflow"
+   - Description: 150-160 characters, compelling and keyword-rich (in Polish)
+   - Use Next.js 14 Metadata API: `export const metadata` or `generateMetadata()` function per page
+   - For client-side pages (`"use client"`), add metadata in parent layout.tsx or use dynamic metadata
+
+2. **Heading hierarchy is critical**
+   - One H1 per page (the main title)
+   - H2 for major sections
+   - H3 for subsections
+   - Never skip heading levels (H1 → H3 is wrong)
+
+3. **Schema.org structured data is mandatory**
+   - Use SoftwareApplication schema for homepage (web tool)
+   - Use HowTo schema for `/instrukcja-importu` page (step-by-step instructions)
+   - Include in JSON-LD format in layout.tsx or per-page
+
+4. **AI/GEO-friendly patterns**
+   - Clear value propositions in first 100 words
+   - Summary blocks for complex content
+   - FAQ sections for common questions
+   - Explicit, descriptive text (avoid vague marketing speak)
+
+5. **Technical SEO**
+   - All images must have alt text (currently no images in project)
+   - Links must have descriptive anchor text
+   - Canonical URLs for all pages (add in metadata)
+   - Sitemap: Create `app/sitemap.ts` (Next.js 14 format)
+   - Robots.txt: Create `app/robots.ts` (Next.js 14 format)
+   - Process pages (`/upload`, `/map`) must have `noIndex: true` (part of workflow, not for indexing)
+   - Instruction page (`/instrukcja-importu`) should be indexed
+
+6. **Content structure**
+   - Landing page (`/`): H1 → value prop → features (H2) → CTA
+   - Instruction page (`/instrukcja-importu`): H1 → intro → sections (H2) → steps (H3) → troubleshooting
+   - Process pages (`/upload`, `/map`): H1 → form/interface → minimal content (these are workflow steps)
+   - All content in Polish language (`lang="pl"` in root layout)
+
+## Project-Specific Guidelines
+
+### Page Metadata Requirements
+
+- **Homepage (`/`)**: Full SEO, SoftwareApplication schema, indexed
+- **Upload page (`/upload`)**: `noIndex: true`, minimal metadata (workflow step)
+- **Map page (`/map`)**: `noIndex: true`, minimal metadata (workflow step)
+- **Instruction page (`/instrukcja-importu`)**: Full SEO, HowTo schema, indexed
+- **Download page (`/download`)**: `noIndex: true` or redirect (workflow step)
+
+### Next.js 14 Implementation
+
+- Use `export const metadata: Metadata` for static metadata
+- Use `export async function generateMetadata()` for dynamic metadata
+- For client components, metadata must be in parent layout or route segment
+- All metadata should be in Polish language
+
+### Current Status
+
+- ✅ Root layout has basic metadata
+- ❌ Individual pages missing metadata (`/upload`, `/map`, `/instrukcja-importu`, `/download`)
+- ❌ No sitemap.ts
+- ❌ No robots.ts
+- ❌ No structured data (Schema.org)
+- ❌ No canonical URLs
+
+## Anti-patterns to avoid
+
+- Generic "Welcome" or "Home" titles
+- Missing meta descriptions
+- Broken heading hierarchy
+- Images without alt text
+- Vague, non-descriptive links ("click here", "learn more")
+- Duplicate content without canonical tags
+- Indexing process/workflow pages (should be `noIndex: true`)
+- English metadata in Polish application

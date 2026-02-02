@@ -99,7 +99,7 @@ export function FileUpload({
         className={`
           relative flex min-h-[160px] flex-col items-center justify-center rounded-lg border-2 border-dashed px-6 py-8 transition-colors duration-200
           ${isDisabled ? "cursor-not-allowed opacity-70" : "cursor-pointer"}
-          ${isDragOver ? "border-slate-400 bg-slate-50" : "border-slate-300 bg-white hover:border-slate-400 hover:bg-slate-50"}
+          ${isDragOver ? "border-slate-400 bg-slate-50 dark:border-slate-500 dark:bg-slate-800" : "border-slate-300 bg-white hover:border-slate-400 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600 dark:hover:bg-slate-700"}
         `}
       >
         {/* Input na wierzchu – niewidoczny, pełna strefa; klik = dialog, drop = obsługa */}
@@ -121,28 +121,29 @@ export function FileUpload({
           {uploading && (
             <>
               <span
-                className="h-8 w-8 animate-[spin_0.8s_linear_infinite] rounded-full border-2 border-slate-300 border-t-slate-600"
+                className="h-8 w-8 animate-[spin_0.8s_linear_infinite] rounded-full border-2 border-slate-300 border-t-slate-600 dark:border-slate-600 dark:border-t-slate-300"
                 aria-hidden
+                aria-busy="true"
               />
-              <span className="mt-2 text-sm font-medium text-slate-600">Przetwarzanie…</span>
+              <span className="mt-2 text-sm font-medium text-slate-600 dark:text-slate-300">Przetwarzanie…</span>
             </>
           )}
 
           {!uploading && showSuccess && (
             <div
-              className="flex flex-col items-center gap-2 text-green-700 animate-fade-in"
+              className="flex flex-col items-center gap-2 text-green-700 dark:text-green-400 animate-fade-in"
               aria-live="polite"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-lg font-medium text-green-700">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-lg font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
                 ✓
               </span>
               <span className="text-sm font-medium">Plik załadowany</span>
-              <span className="text-xs text-green-600">{selectedFileName}</span>
+              <span className="text-xs text-green-600 dark:text-green-400">{selectedFileName}</span>
             </div>
           )}
 
           {!uploading && !showSuccess && (
-            <p className="text-sm font-medium text-slate-600">Wybierz plik lub przeciągnij tutaj</p>
+            <p className="text-sm font-medium text-slate-600 dark:text-slate-300">Wybierz plik lub przeciągnij tutaj</p>
           )}
         </div>
 
@@ -152,7 +153,7 @@ export function FileUpload({
             type="button"
             onClick={handleClear}
             disabled={isDisabled}
-            className="relative z-20 mt-2 text-sm font-medium text-slate-600 underline underline-offset-2 hover:text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 rounded disabled:opacity-70"
+            className="relative z-20 mt-2 text-sm font-medium text-slate-600 underline underline-offset-2 hover:text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 rounded disabled:opacity-70 dark:text-slate-300 dark:hover:text-slate-200 dark:focus:ring-offset-slate-800"
           >
             Wyczyść — wybierz inny plik
           </button>
@@ -160,11 +161,11 @@ export function FileUpload({
       </div>
 
       {!uploading && !showSuccess && (
-        <p className="text-center text-xs text-slate-500">XLSX, XLS, CSV lub XML</p>
+        <p className="text-center text-xs text-slate-500 dark:text-slate-400">XLSX, XLS, CSV lub XML</p>
       )}
 
       {showError && errorText && (
-        <p className="text-sm text-red-600" role="alert">
+        <p className="text-sm text-red-600 dark:text-red-400" role="alert" aria-live="polite">
           {errorText}
         </p>
       )}

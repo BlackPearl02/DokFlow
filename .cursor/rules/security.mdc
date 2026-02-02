@@ -1,0 +1,850 @@
+# Security Rules
+
+## Core Security Principles
+
+1. **Never trust client-side data**
+   - Always validate and sanitize input on the server
+   - Use server-side authentication checks
+   - Never expose sensitive logic to the client
+
+2. **Defense in depth**
+   - Multiple layers of security (middleware, RLS, validation)
+   - Fail securely (deny by default)
+   - Principle of least privilege
+
+3. **Security by default**
+   - All routes protected unless explicitly public
+   - Secure headers on all responses
+   - HTTPS only in production
+
+## Environment Variables & Secrets
+
+1. **Never expose secrets to the client**
+   - Only `NEXT_PUBLIC_*` variables are exposed to the browser
+   - Server-only secrets (API keys, service role keys) must NOT have `NEXT_PUBLIC_` prefix
+   - Never commit `.env.local` or `.env` files to git
+
+2. **Proper secret management**
+   - Use Vercel environment variables for production
+   - Rotate secrets regularly
+   - Use different keys for dev/staging/production
+   - Never log secrets or include them in error messages
+
+3. **Supabase keys** *(Planowane w przyszłości)*
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` - safe to expose (protected by RLS)
+   - `SUPABASE_SERVICE_ROLE_KEY` - NEVER expose, server-only
+   - Anon key is limited by Row Level Security policies
+   - **Uwaga:** Obecnie aplikacja jest publiczna (brak autentykacji), ale planowane jest dodanie logowania przez Supabase i kont klientów
+
+## SQL Injection Protection *(Planowane w przyszłości)*
+
+**Uwaga:** Obecnie aplikacja nie używa bazy danych (dane w pamięci), ale po dodaniu Supabase i kont klientów ta sekcja będzie obowiązkowa.
+
+1. **Always use parameterized queries**
+   - Supabase client handles this automatically
+   - Never concatenate user input into SQL strings
+   - Use Supabase query builder methods
+
+2. **Input validation**
+   - Validate all user inputs with Zod or similar
+   - Sanitize strings before database operations
+   - Reject suspicious patterns (SQL keywords, special chars)
+
+3. **Example safe pattern:**
+   ```typescript
+   // ✅ CORRECT - Supabase handles parameterization
+   const { data } = await supabase
+     .from('users')
+     .select('*')
+     .eq('id', userId) // Safe, parameterized
+   
+   // ❌ WRONG - Never do this
+   const query = `SELECT * FROM users WHERE id = '${userId}'`
+   ```
+
+## Supabase Row Level Security (RLS) *(Planowane w przyszłości)*
+
+**Uwaga:** Obecnie aplikacja nie używa Supabase ani bazy danych. Po dodaniu logowania przez Supabase i kont klientów, RLS będzie obowiązkowe dla wszystkich tabel.
+
+1. **RLS is mandatory for all tables**
+   - Enable RLS on every table in Supabase
+   - Default policy: DENY ALL
+   - Add specific policies for each use case
+
+2. **Policy patterns**
+   - Users can only read their own data: `auth.uid() = user_id`
+   - Public read, authenticated write: Separate policies
+   - Admin access: Use service role key (server-only)
+
+3. **Example RLS policies:**
+   ```sql
+   -- Enable RLS
+   ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+   
+   -- Users can read their own profile
+   CREATE POLICY "Users can read own profile"
+     ON profiles FOR SELECT
+     USING (auth.uid() = user_id);
+   
+   -- Users can update their own profile
+   CREATE POLICY "Users can update own profile"
+     ON profiles FOR UPDATE
+     USING (auth.uid() = user_id);
+   ```
+
+4. **Testing RLS**
+   - Test with anon key (should be restricted)
+   - Test with authenticated user (should see own data only)
+   - Test with service role (should bypass RLS)
+
+## DDoS & Rate Limiting
+
+**Krytyczne:** Obecnie brak rate limitingu — należy dodać dla wszystkich API routes.
+
+1. **Middleware rate limiting**
+   - Implement rate limiting in Next.js middleware
+   - Limit by IP address
+   - Different limits for upload endpoints vs other routes
+   - `/api/parse` (file upload) — bardziej restrykcyjne limity (np. 10/min)
+   - `/api/session`, `/api/export`, `/api/nbp-exchange-rate` — standardowe limity (np. 100/min)
+
+2. **Vercel protection**
+   - Vercel provides DDoS protection automatically
+   - Use Vercel Edge Config for rate limiting
+   - Configure firewall rules in Vercel dashboard
+
+3. **API route protection**
+   - Rate limit all API routes
+   - Use exponential backoff for retries
+   - Block suspicious IPs after multiple failures
+
+4. **Example middleware rate limiting:**
+   ```typescript
+   // middleware.ts
+   import { NextResponse } from 'next/server';
+   import type { NextRequest } from 'next/server';
+   
+   const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+   
+   const RATE_LIMITS = {
+     '/api/parse': { max: 10, window: 60000 }, // 10 requests per minute
+     default: { max: 100, window: 60000 }, // 100 requests per minute
+   };
+   
+   export function middleware(request: NextRequest) {
+     const ip = request.ip ?? 'unknown';
+     const path = request.nextUrl.pathname;
+     const limit = RATE_LIMITS[path as keyof typeof RATE_LIMITS] ?? RATE_LIMITS.default;
+     
+     const now = Date.now();
+     const record = rateLimitMap.get(ip);
+     
+     if (record) {
+       if (now > record.resetTime) {
+         record.count = 1;
+         record.resetTime = now + limit.window;
+       } else {
+         record.count++;
+         if (record.count > limit.max) {
+           return NextResponse.json(
+             { error: 'Rate limit exceeded' },
+             { status: 429 }
+           );
+         }
+       }
+     } else {
+       rateLimitMap.set(ip, { count: 1, resetTime: now + limit.window });
+     }
+     
+     return NextResponse.next();
+   }
+   
+   export const config = {
+     matcher: '/api/:path*',
+   };
+   ```
+
+## Authentication & Authorization
+
+**Obecny stan:** Aplikacja jest publiczna — wszystkie endpointy są dostępne bez autentykacji. Dane są przechowywane w pamięci (in-memory sessions) z TTL 30 minut.
+
+**Planowane w przyszłości:** Dodanie logowania przez Supabase i kont klientów. Po implementacji poniższe zasady będą obowiązkowe.
+
+1. **Server-side session validation** *(Planowane)*
+   - Always check auth on the server
+   - Use `createClient()` from `lib/supabase/server`
+   - Never trust client-side auth state alone
+
+2. **Protected routes** *(Planowane)*
+   - Middleware checks auth for protected routes
+   - Server components verify user before rendering
+   - Redirect to sign-in if unauthenticated
+
+3. **Token security** *(Planowane)*
+   - Tokens stored in httpOnly cookies (not localStorage)
+   - Automatic token refresh via middleware
+   - Secure cookie flags: `httpOnly`, `secure`, `sameSite`
+
+4. **Password security** *(Planowane)*
+   - Supabase handles password hashing (bcrypt)
+   - Enforce strong passwords (min length, complexity)
+   - Implement password reset with time-limited tokens
+
+## Security Headers
+
+1. **Next.js security headers**
+   - Content Security Policy (CSP)
+   - X-Frame-Options: DENY
+   - X-Content-Type-Options: nosniff
+   - Referrer-Policy: strict-origin-when-cross-origin
+   - Permissions-Policy: restrict unnecessary features
+
+2. **CORS configuration**
+   - Whitelist specific origins only
+   - Never use `*` for production
+   - Configure in `next.config.js`
+
+3. **Example headers configuration for DokFlow:**
+   ```javascript
+   // next.config.js
+   /** @type {import('next').NextConfig} */
+   const nextConfig = {
+     async headers() {
+       return [
+         {
+           source: '/(.*)',
+           headers: [
+             {
+               key: 'X-Frame-Options',
+               value: 'DENY'
+             },
+             {
+               key: 'X-Content-Type-Options',
+               value: 'nosniff'
+             },
+             {
+               key: 'Referrer-Policy',
+               value: 'strict-origin-when-cross-origin'
+             },
+             {
+               key: 'Permissions-Policy',
+               value: 'camera=(), microphone=(), geolocation=()'
+             },
+             {
+               key: 'Content-Security-Policy',
+               value: [
+                 "default-src 'self'",
+                 "script-src 'self' 'unsafe-eval' 'unsafe-inline'", // Next.js requires unsafe-eval in dev
+                 "style-src 'self' 'unsafe-inline'", // Tailwind requires unsafe-inline
+                 "img-src 'self' data: https:",
+                 "font-src 'self' data:",
+                 "connect-src 'self' https://api.nbp.pl", // Allow NBP API
+                 "frame-ancestors 'none'",
+               ].join('; ')
+             }
+           ]
+         }
+       ]
+     }
+   };
+   
+   module.exports = nextConfig;
+   ```
+
+## Input Validation & Sanitization
+
+1. **Validate all inputs**
+   - Use Zod schemas for type-safe validation
+   - Validate on both client and server
+   - Server validation is the source of truth
+
+2. **Sanitize user-generated content**
+   - Sanitize HTML content (prevent XSS)
+   - Escape special characters
+   - Limit input length
+
+3. **DokFlow-specific input validation**
+
+   **SessionId validation:**
+   ```typescript
+   // ✅ CORRECT - Validate UUID format
+   import { validate as validateUUID } from 'uuid';
+   
+   const sessionId = body.sessionId;
+   if (!sessionId || typeof sessionId !== 'string' || !validateUUID(sessionId)) {
+     return NextResponse.json({ error: 'Nieprawidłowy identyfikator sesji' }, { status: 400 });
+   }
+   ```
+
+   **Mappings validation:**
+   ```typescript
+   // ✅ CORRECT - Validate mappings structure
+   import { z } from 'zod';
+   
+   const MappingsSchema = z.object({
+     symbol: z.number().int().nonnegative().nullable(),
+     ilosc: z.number().int().nonnegative().nullable(),
+     cenaJedn: z.number().int().nonnegative().nullable(),
+   });
+   
+   const result = MappingsSchema.safeParse(body.mappings);
+   if (!result.success) {
+     return NextResponse.json({ error: 'Nieprawidłowy format mappings' }, { status: 400 });
+   }
+   
+   // Validate column indices are within bounds
+   const session = sessionStore.get(sessionId);
+   const maxColIndex = session.rawRows[0]?.length ?? 0;
+   for (const [field, colIndex] of Object.entries(result.data)) {
+     if (colIndex !== null && colIndex >= maxColIndex) {
+       return NextResponse.json(
+         { error: `Kolumna ${colIndex} dla pola ${field} jest poza zakresem` },
+         { status: 400 }
+       );
+     }
+   }
+   ```
+
+   **HeaderRowIndex validation:**
+   ```typescript
+   // ✅ CORRECT - Validate headerRowIndex
+   const headerRowIndex = body.headerRowIndex;
+   if (typeof headerRowIndex !== 'number' || 
+       !Number.isInteger(headerRowIndex) ||
+       headerRowIndex < 0 ||
+       headerRowIndex >= session.rawRows.length) {
+     return NextResponse.json(
+       { error: 'Nieprawidłowy indeks wiersza nagłówka' },
+       { status: 400 }
+     );
+   }
+   ```
+
+   **Currency validation:**
+   ```typescript
+   // ✅ CORRECT - Validate currency code
+   const CURRENCY_REGEX = /^[A-Z]{3}$/;
+   const currency = body.currency?.toUpperCase();
+   
+   if (!currency || !CURRENCY_REGEX.test(currency)) {
+     return NextResponse.json({ error: 'Nieprawidłowy kod waluty' }, { status: 400 });
+   }
+   ```
+
+   **ExchangeRate validation:**
+   ```typescript
+   // ✅ CORRECT - Validate exchange rate
+   const exchangeRate = body.exchangeRate;
+   if (exchangeRate !== undefined) {
+     if (typeof exchangeRate !== 'number' ||
+         !isFinite(exchangeRate) ||
+         exchangeRate <= 0 ||
+         exchangeRate > 1000000) { // Reasonable upper bound
+       return NextResponse.json({ error: 'Nieprawidłowy kurs waluty' }, { status: 400 });
+     }
+   }
+   ```
+
+3. **File upload security** *(Krytyczne dla DokFlow)*
+   
+   DokFlow przetwarza pliki XLSX/XLS/CSV/XML. Wszystkie pliki są parsowane tylko w pamięci, bez zapisu na dysk.
+   
+   **Walidacja rozszerzeń (whitelist):**
+   ```typescript
+   // ✅ CORRECT - Whitelist approach
+   const ALLOWED_EXTENSIONS = ['.xlsx', '.xls', '.csv', '.xml'];
+   const ext = fileName.toLowerCase().slice(fileName.lastIndexOf('.'));
+   if (!ALLOWED_EXTENSIONS.includes(ext)) {
+     throw new Error('Nieobsługiwany format pliku');
+   }
+   ```
+   
+   **Limit rozmiaru pliku:**
+   ```typescript
+   // ✅ CORRECT - Enforce size limit
+   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+   if (file.size > MAX_FILE_SIZE) {
+     throw new Error('Plik jest zbyt duży. Maksymalny rozmiar: 50MB');
+   }
+   if (file.size === 0) {
+     throw new Error('Plik jest pusty');
+   }
+   ```
+   
+   **Walidacja typu MIME (dodatkowa warstwa):**
+   ```typescript
+   // ✅ CORRECT - Validate MIME type
+   const ALLOWED_MIME_TYPES = [
+     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+     'application/vnd.ms-excel', // .xls
+     'text/csv',
+     'application/xml',
+     'text/xml',
+   ];
+   // Note: MIME types can be spoofed, so always validate extension too
+   ```
+   
+   **Ochrona przed path traversal:**
+   ```typescript
+   // ✅ CORRECT - Sanitize filename
+   const sanitizedFileName = file.name
+     .replace(/[^a-zA-Z0-9._-]/g, '_') // Remove special chars
+     .replace(/\.\./g, '') // Remove path traversal attempts
+     .slice(0, 255); // Limit length
+   ```
+   
+   **Parsowanie tylko w pamięci:**
+   - ✅ Pliki są przetwarzane z Buffer (nie zapisywane na dysk)
+   - ✅ Dane przechowywane tylko w pamięci (session store)
+   - ✅ Automatyczne usuwanie po TTL (30 min) lub po eksporcie
+   - ❌ NIGDY nie zapisuj plików na dysk serwera
+   - ❌ NIGDY nie loguj zawartości plików
+
+## Session Security (In-Memory)
+
+**Obecna implementacja:** DokFlow używa in-memory session store z UUID jako identyfikatorami.
+
+1. **Session ID generation**
+   - ✅ Używaj `crypto.randomUUID()` (już zaimplementowane)
+   - ✅ Session ID to UUID v4 (128-bit random)
+   - ❌ NIGDY nie używaj sekwencyjnych ID lub przewidywalnych wartości
+
+2. **Session ID validation**
+   ```typescript
+   // ✅ CORRECT - Validate UUID format
+   import { validate as validateUUID } from 'uuid';
+   
+   const sessionId = request.nextUrl.searchParams.get('sessionId');
+   if (!sessionId || !validateUUID(sessionId)) {
+     return NextResponse.json({ error: 'Nieprawidłowy identyfikator sesji' }, { status: 400 });
+   }
+   ```
+
+3. **Session TTL and cleanup**
+   - ✅ TTL: 30 minut (już zaimplementowane w `lib/session-store.ts`)
+   - ✅ Automatyczny cleanup co 5 minut
+   - ✅ Sesje usuwane po eksporcie (`sessionStore.remove()`)
+   - ⚠️ Rozważyć przeniesienie sessionId z URL do httpOnly cookie (po dodaniu auth)
+
+4. **Session ID exposure**
+   - ⚠️ Obecnie sessionId w URL query params (może być logowane w serwerach proxy)
+   - ⚠️ Po dodaniu auth: użyj httpOnly cookies dla sessionId
+   - ✅ Nie zwracaj sessionId w error messages
+
+5. **Session data security**
+   - ✅ Dane tylko w pamięci (nie w bazie danych)
+   - ✅ Brak logowania zawartości plików
+   - ✅ Automatyczne usuwanie po TTL
+   - ❌ NIGDY nie loguj `rawRows` lub zawartości plików
+
+6. **Example safe session handling:**
+   ```typescript
+   // ✅ CORRECT - Validate and get session
+   const sessionId = request.nextUrl.searchParams.get('sessionId');
+   if (!sessionId || !validateUUID(sessionId)) {
+     return NextResponse.json({ error: 'Nieprawidłowy identyfikator sesji' }, { status: 400 });
+   }
+   
+   const session = sessionStore.get(sessionId);
+   if (!session) {
+     return NextResponse.json({ error: 'Sesja wygasła lub nie istnieje' }, { status: 404 });
+   }
+   
+   // Check TTL
+   if (Date.now() - session.createdAt > TTL_MS) {
+     sessionStore.remove(sessionId);
+     return NextResponse.json({ error: 'Sesja wygasła' }, { status: 404 });
+   }
+   ```
+
+## XML Parsing Security
+
+**Krytyczne:** DokFlow parsuje pliki XML. Należy chronić przed atakami XXE (XML External Entity).
+
+1. **XXE (XML External Entity) Protection**
+   ```typescript
+   // ✅ CORRECT - Configure fast-xml-parser to prevent XXE
+   import { XMLParser } from 'fast-xml-parser';
+   
+   const parser = new XMLParser({
+     ignoreAttributes: false,
+     attributeNamePrefix: '@_',
+     textNodeName: '#text',
+     parseAttributeValue: false,
+     trimValues: true,
+     // CRITICAL: Disable external entities
+     ignoreDeclaration: true,
+     ignorePiTags: true,
+     processEntities: false, // Prevents XXE
+     alwaysCreateTextNode: false,
+     // Limit parsing depth
+     parseTagValue: false,
+   });
+   ```
+
+2. **Limit XML size**
+   ```typescript
+   // ✅ CORRECT - Limit XML buffer size
+   const MAX_XML_SIZE = 50 * 1024 * 1024; // 50MB
+   const buffer = Buffer.from(await file.arrayBuffer());
+   if (buffer.length > MAX_XML_SIZE) {
+     throw new Error('Plik XML jest zbyt duży');
+   }
+   ```
+
+3. **Limit nesting depth**
+   ```typescript
+   // ✅ CORRECT - Limit XML nesting depth
+   // fast-xml-parser doesn't have built-in depth limit,
+   // but you can validate after parsing
+   function validateMaxDepth(obj: any, maxDepth: number, currentDepth = 0): boolean {
+     if (currentDepth > maxDepth) return false;
+     if (typeof obj === 'object' && obj !== null) {
+       for (const value of Object.values(obj)) {
+         if (!validateMaxDepth(value, maxDepth, currentDepth + 1)) {
+           return false;
+         }
+       }
+     }
+     return true;
+   }
+   
+   const parsed = parser.parse(xmlText);
+   if (!validateMaxDepth(parsed, 20)) { // Max 20 levels
+     throw new Error('XML ma zbyt głęboką strukturę');
+   }
+   ```
+
+4. **Validate XML structure**
+   - ✅ Sprawdź, czy XML zawiera dane (nie jest pusty)
+   - ✅ Sprawdź, czy znaleziono powtarzające się elementy (produkty, pozycje)
+   - ✅ Obsłuż błędy parsowania gracefully
+
+5. **Anti-patterns:**
+   ```typescript
+   // ❌ WRONG - Enabling external entities
+   const parser = new XMLParser({
+     processEntities: true, // DANGEROUS - enables XXE
+   });
+   
+   // ❌ WRONG - No size limit
+   const buffer = await file.arrayBuffer(); // No size check
+   ```
+
+## External API Security (NBP Exchange Rate)
+
+**Obecna implementacja:** DokFlow wywołuje zewnętrzne API NBP dla kursów walut.
+
+1. **Timeout for external requests**
+   ```typescript
+   // ✅ CORRECT - Add timeout to fetch
+   const controller = new AbortController();
+   const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+   
+   try {
+     const response = await fetch(url, {
+       signal: controller.signal,
+       headers: { Accept: 'application/json' },
+     });
+     clearTimeout(timeoutId);
+     // ... handle response
+   } catch (err) {
+     clearTimeout(timeoutId);
+     if (err instanceof Error && err.name === 'AbortError') {
+       throw new Error('Timeout podczas pobierania kursu waluty');
+     }
+     throw err;
+   }
+   ```
+
+2. **Currency validation (whitelist)**
+   ```typescript
+   // ✅ CORRECT - Validate currency code
+   const ALLOWED_CURRENCIES = ['EUR', 'USD', 'GBP', 'CHF', 'JPY', 'PLN'];
+   const currency = request.nextUrl.searchParams.get('currency')?.toUpperCase();
+   
+   if (!currency || !ALLOWED_CURRENCIES.includes(currency)) {
+     return NextResponse.json(
+       { error: 'Nieobsługiwana waluta' },
+       { status: 400 }
+     );
+   }
+   ```
+
+3. **Rate limiting for external API calls**
+   - Cache exchange rates (np. 1 godzina)
+   - Rate limit wywołania do NBP API (np. 10/min per IP)
+   - Użyj in-memory cache dla często używanych walut
+
+4. **Error handling**
+   ```typescript
+   // ✅ CORRECT - Generic error messages
+   if (!response.ok) {
+     if (response.status === 404) {
+       return NextResponse.json(
+         { error: 'Nie znaleziono kursu dla podanej waluty' },
+         { status: 404 }
+       );
+     }
+     return NextResponse.json(
+       { error: 'Błąd pobierania kursu z NBP' },
+       { status: 500 }
+     );
+   }
+   
+   // ❌ WRONG - Don't expose internal details
+   return NextResponse.json(
+     { error: `NBP API returned ${response.status}: ${await response.text()}` },
+     { status: 500 }
+   );
+   ```
+
+5. **Response validation**
+   ```typescript
+   // ✅ CORRECT - Validate response structure
+   const data = await response.json();
+   const rate = data.rates?.[0]?.mid;
+   
+   if (!rate || typeof rate !== 'number' || rate <= 0 || !isFinite(rate)) {
+     return NextResponse.json(
+       { error: 'Nieprawidłowy format odpowiedzi z NBP' },
+       { status: 500 }
+     );
+   }
+   ```
+
+## XSS (Cross-Site Scripting) Protection
+
+1. **React automatically escapes**
+   - React escapes content by default
+   - Use `dangerouslySetInnerHTML` only when necessary
+   - Sanitize HTML if using `dangerouslySetInnerHTML`
+
+2. **Content Security Policy**
+   - Restrict inline scripts
+   - Whitelist trusted sources
+   - Report violations
+
+3. **Safe patterns:**
+   ```typescript
+   // ✅ CORRECT - React escapes automatically
+   <div>{userContent}</div>
+   
+   // ⚠️ CAUTION - Only if absolutely necessary
+   <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
+   ```
+
+## CSRF Protection
+
+1. **SameSite cookies**
+   - Use `sameSite: 'lax'` or `'strict'` for auth cookies
+   - Prevents CSRF attacks automatically
+
+2. **State parameter for OAuth**
+   - Always use state parameter in OAuth flows
+   - Validate state on callback
+
+## Data Privacy & In-Memory Data Handling
+
+**Obecna implementacja:** DokFlow przechowuje dane tylko w pamięci, bez bazy danych.
+
+1. **In-memory data storage**
+   - ✅ Dane przechowywane tylko w pamięci (Map<string, SessionData>)
+   - ✅ Brak zapisu na dysk
+   - ✅ Brak bazy danych (obecnie)
+   - ✅ Automatyczne usuwanie po TTL (30 minut)
+   - ✅ Usuwanie po eksporcie (`sessionStore.remove()`)
+
+2. **Data retention and TTL**
+   ```typescript
+   // ✅ CORRECT - TTL implementation (already in lib/session-store.ts)
+   const TTL_MS = 30 * 60 * 1000; // 30 minutes
+   const CLEANUP_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+   
+   // Automatic cleanup
+   setInterval(() => {
+     const now = Date.now();
+     Array.from(store.entries()).forEach(([id, data]) => {
+       if (now - data.createdAt > TTL_MS) {
+         store.delete(id);
+       }
+     });
+   }, CLEANUP_INTERVAL_MS);
+   ```
+
+3. **No logging of file contents**
+   - ❌ NIGDY nie loguj `rawRows` lub zawartości plików
+   - ❌ NIGDY nie loguj `session.rawRows` w error messages
+   - ✅ Loguj tylko metadane (fileName, sessionId, timestamps)
+   - ✅ Loguj błędy bez zawartości danych
+
+4. **Session data cleanup**
+   - ✅ Usuwanie po eksporcie: `sessionStore.remove(sessionId)`
+   - ✅ Usuwanie po TTL: automatyczny cleanup
+   - ✅ Usuwanie po błędzie: rozważyć cleanup w catch blocks
+
+5. **GDPR compliance considerations**
+   - ✅ Dane automatycznie usuwane po 30 minutach
+   - ✅ Brak trwałego przechowywania danych użytkownika
+   - ⚠️ Po dodaniu kont klientów: dodać możliwość ręcznego usunięcia danych
+   - ⚠️ Po dodaniu kont klientów: dodać eksport danych użytkownika
+
+6. **Example safe data handling:**
+   ```typescript
+   // ✅ CORRECT - Don't log sensitive data
+   console.log('Session created', { sessionId, fileName, createdAt }); // OK
+   console.log('Session data', session.rawRows); // ❌ WRONG - Never log file contents
+   
+   // ✅ CORRECT - Generic error messages
+   catch (err) {
+     console.error('Export error', { sessionId, error: err.message }); // OK
+     // Don't log session.rawRows or file contents
+   }
+   ```
+
+## Data Encryption
+
+1. **Encryption at rest** *(Planowane w przyszłości)*
+   - Po dodaniu Supabase: baza danych jest szyfrowana automatycznie
+   - Encrypt sensitive fields before storing (if needed)
+
+2. **Encryption in transit**
+   - HTTPS only (enforced by Vercel)
+   - TLS 1.2+ required
+
+3. **Sensitive data handling**
+   - Never log sensitive data (passwords, tokens, PII, file contents)
+   - Hash sensitive data when possible
+   - Use environment variables for secrets
+
+## Error Handling & Information Disclosure
+
+1. **Never expose sensitive info in errors**
+   - Generic error messages to users
+   - Detailed errors only in server logs
+   - Don't reveal database structure in errors
+
+2. **Error logging**
+   - Log errors to Sentry (server-side)
+   - Include context but exclude secrets
+   - Monitor for security-related errors
+
+3. **Example safe error handling:**
+   ```typescript
+   // ✅ CORRECT
+   throw new Error('Authentication failed');
+   
+   // ❌ WRONG
+   throw new Error(`Database error: ${dbError.message}`);
+   ```
+
+## API Security
+
+**Obecny stan:** Wszystkie API routes są publiczne (brak autentykacji). Po dodaniu Supabase, routes będą chronione.
+
+1. **API route protection**
+   - *(Obecnie)* Wszystkie routes publiczne
+   - *(Planowane)* Authenticate all API routes after Supabase integration
+   - Validate request methods (POST, GET, PUT, etc.)
+   - Rate limit API endpoints (krytyczne — obecnie brak)
+
+2. **Request validation**
+   - Validate request body with Zod
+   - Check content-type headers
+   - Limit request size (szczególnie dla `/api/parse`)
+
+3. **Request size limits**
+   ```typescript
+   // ✅ CORRECT - Limit request body size
+   const MAX_BODY_SIZE = 50 * 1024 * 1024; // 50MB
+   
+   const contentLength = request.headers.get('content-length');
+   if (contentLength && parseInt(contentLength) > MAX_BODY_SIZE) {
+     return NextResponse.json(
+       { error: 'Request body jest zbyt duży' },
+       { status: 413 }
+     );
+   }
+   ```
+
+4. **Response security**
+   - Don't expose internal errors
+   - Use consistent error format
+   - Set appropriate status codes
+   - Don't expose file contents or session data in errors
+
+## Monitoring & Incident Response
+
+1. **Security monitoring**
+   - Monitor failed login attempts
+   - Track unusual API usage patterns
+   - Alert on security events
+
+2. **Audit logging**
+   - Log all authentication events
+   - Log sensitive operations (data access, changes)
+   - Retain logs for compliance
+
+3. **Incident response plan**
+   - Document security incident procedures
+   - Have rollback procedures ready
+   - Know how to revoke compromised tokens
+
+## Compliance Considerations
+
+1. **GDPR compliance**
+   - User data deletion capability
+   - Privacy policy and terms of service
+   - Data export functionality
+
+2. **Data retention**
+   - Define data retention policies
+   - Automate data deletion after retention period
+   - Document what data is collected
+
+## Security Checklist for New Features
+
+### Obecna architektura (publiczne API, in-memory sessions)
+- [ ] Input validation (server-side) — walidacja sessionId (UUID), mappings, currency, exchangeRate
+- [ ] File upload security — walidacja rozszerzeń, rozmiaru (max 50MB), MIME type
+- [ ] Session security — walidacja UUID, sprawdzenie TTL, cleanup
+- [ ] Rate limiting — dodać dla wszystkich API routes (szczególnie `/api/parse`)
+- [ ] Error messages don't leak info — nie ujawniaj zawartości plików ani session data
+- [ ] Security headers configured — dodać do `next.config.js`
+- [ ] XML parsing security — ochrona przed XXE, limit rozmiaru i głębokości
+- [ ] External API security — timeout, walidacja waluty, rate limiting
+- [ ] No secrets in client code — tylko `NEXT_PUBLIC_*` variables
+- [ ] Data privacy — nie loguj zawartości plików, automatyczne usuwanie po TTL
+- [ ] Tests for security scenarios
+
+### Po dodaniu Supabase i autentykacji
+- [ ] Authentication check (if protected route)
+- [ ] RLS policies updated (if database access)
+- [ ] Token security — httpOnly cookies, secure flags
+- [ ] Password security — strong passwords, reset functionality
+
+## Anti-patterns to avoid
+
+### Obecna architektura
+- ❌ Brak walidacji rozmiaru pliku (obecnie tylko sprawdzanie `file.size === 0`)
+- ❌ Brak timeout dla zewnętrznych API (NBP exchange rate)
+- ❌ Brak walidacji formatu UUID dla sessionId
+- ❌ Brak rate limitingu dla API routes
+- ❌ Brak konfiguracji security headers w `next.config.js`
+- ❌ Logowanie zawartości plików lub `rawRows` w error messages
+- ❌ Brak walidacji MIME type (tylko rozszerzenie pliku)
+- ❌ Brak ochrony przed XXE w XML parsing (sprawdzić konfigurację fast-xml-parser)
+- ❌ Brak limitów głębokości i rozmiaru dla XML
+- ❌ Brak walidacji whitelist dla currency codes
+- ❌ Using `any` types for user input (sessionId, mappings, currency)
+- ❌ Trusting client-side validation alone
+- ❌ Storing sensitive data in localStorage (po dodaniu auth: użyj httpOnly cookies)
+- ❌ Using `eval()` or `Function()` constructor
+- ❌ Bypassing security checks "temporarily"
+- ❌ Hardcoding secrets in source code
+
+### Po dodaniu Supabase i autentykacji
+- ❌ Exposing service role keys to client
+- ❌ Disabling RLS "for testing"
+- ❌ Logging passwords or tokens
+- ❌ Generic error messages that reveal system internals

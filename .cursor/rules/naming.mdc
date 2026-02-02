@@ -1,0 +1,46 @@
+# Naming Conventions
+
+## Branding & Project Names
+
+1. **Template defaults**
+   - Product name: "FlowSync" (example - replace per project)
+   - Domain: "flowsync.app" (example - replace per project)
+   - Color theme: Blue primary (#3B82F6) - professional, trustworthy
+
+2. **Regenerating branding**
+   - Choose name that's:
+     - Memorable and pronounceable
+     - Available-looking domain (don't check, just generate)
+     - Matches product category
+   - Color palette should:
+     - Have good contrast ratios
+     - Work in dark mode
+     - Not look like generic AI template
+
+## Code Naming
+
+- **Variables**: camelCase (`userName`, `isLoading`)
+- **Functions**: camelCase, verb-based (`getUserData`, `handleSubmit`)
+- **Components**: PascalCase (`UserProfile`, `SignInForm`)
+- **Constants**: UPPER_SNAKE_CASE (`API_BASE_URL`, `MAX_RETRIES`)
+- **Types/Interfaces**: PascalCase (`UserData`, `ApiResponse`)
+- **Files**: Match export (component file = component name)
+
+## URL & Route Naming
+
+- **Routes**: kebab-case (`/sign-in`, `/blog/post-title`)
+- **API routes**: kebab-case (`/api/user-data`)
+- **Query params**: camelCase (`?userId=123`)
+
+## CSS Classes
+
+- Use Tailwind utility classes (preferred)
+- Custom classes: kebab-case (`.user-profile-card`)
+- BEM only if necessary for complex components
+
+## Anti-patterns
+
+- Inconsistent naming (mixing camelCase and snake_case)
+- Abbreviations that aren't obvious (`usr` instead of `user`)
+- Generic names (`data`, `item`, `thing`)
+- Hungarian notation (`strUserName`)
