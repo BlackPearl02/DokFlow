@@ -134,69 +134,64 @@ export function MappingForm({
       )}
       <div className="space-y-4">
         <div className="rounded-xl border border-slate-200/80 bg-white/80 backdrop-blur-sm p-6 shadow-lg shadow-slate-200/30 dark:border-slate-700/80 dark:bg-slate-800/80 dark:shadow-slate-950/50">
-          <p className="text-base font-bold text-slate-900 dark:text-slate-100 mb-4">Mapowanie kolumn</p>
-          {ERP_FIELDS.map(({ id, label, required }) => {
-          const error = getFieldError(id);
-          const hasError = error !== null;
-          const suggestion = suggestedMappings[id];
-          return (
-            <div key={id} className="space-y-2">
-              <div className="flex items-center gap-4">
-                <label htmlFor={`map-${id}`} className="w-40 shrink-0 text-sm font-semibold text-slate-800 dark:text-slate-200">
-                  {label}
-                  {required && (
-                    <span className="ml-1 text-red-600 dark:text-red-400" aria-hidden>
-                      *
-                    </span>
-                  )}
-                </label>
-                <div className="flex flex-1 flex-col gap-1.5">
-                  <select
-                    id={`map-${id}`}
-                    value={mappings[id] != null ? String(mappings[id]) : ""}
-                    onChange={(e) => handleChange(id, e.target.value)}
-                    onBlur={() => setTouchedFields((prev) => new Set(prev).add(id))}
-                    className={`
-                      flex-1 rounded-xl border-2 px-4 py-2.5 text-sm font-medium transition-all duration-200 shadow-sm
-                      focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-70
-                      ${hasError 
-                        ? "border-red-400 bg-red-50/50 focus:border-red-500 focus:ring-red-500 dark:border-red-600 dark:bg-red-900/20 dark:focus:border-red-500 dark:focus:ring-red-500" 
-                        : "border-slate-300 bg-white focus:border-blue-500 focus:ring-blue-500 hover:border-slate-400 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:focus:border-blue-400 dark:focus:ring-offset-slate-800 dark:hover:border-slate-500"
-                      }
-                    `}
-                    disabled={disabled}
-                    aria-invalid={hasError}
-                    aria-describedby={hasError ? `map-${id}-error` : undefined}
-                  >
-                    <option value="">— nie mapuj —</option>
-                    {options}
-                  </select>
-                  {suggestion && suggestion.confidence > 0.5 && mappings[id] === suggestion.columnIndex && (
-                    <p className="text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1">
-                      <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                      </svg>
-                      Sugerowane mapowanie (dopasowanie: {Math.round(suggestion.confidence * 100)}%)
-                    </p>
-                  )}
-                  {hasError && (
-                    <span
-                      id={`map-${id}-error`}
-                      className="text-xs font-medium text-red-600 dark:text-red-400 flex items-center gap-1"
-                      role="alert"
-                      aria-live="polite"
-                    >
-                      <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                      </svg>
-                      {error}
-                    </span>
-                  )}
+          <p className="text-base font-bold text-slate-900 dark:text-slate-100 mb-5">Mapowanie kolumn</p>
+          <div className="space-y-5">
+            {ERP_FIELDS.map(({ id, label, required }) => {
+              const error = getFieldError(id);
+              const hasError = error !== null;
+              const suggestion = suggestedMappings[id];
+              return (
+                <div key={id} className="space-y-2">
+                  <div className="flex items-start gap-4">
+                    <label htmlFor={`map-${id}`} className="w-40 shrink-0 pt-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
+                      {label}
+                      {required && (
+                        <span className="ml-1 text-red-600 dark:text-red-400" aria-hidden>
+                          *
+                        </span>
+                      )}
+                    </label>
+                    <div className="flex flex-1 flex-col gap-1.5">
+                      <select
+                        id={`map-${id}`}
+                        value={mappings[id] != null ? String(mappings[id]) : ""}
+                        onChange={(e) => handleChange(id, e.target.value)}
+                        onBlur={() => setTouchedFields((prev) => new Set(prev).add(id))}
+                        className={`
+                          w-full rounded-xl border-2 px-4 py-2.5 text-sm font-medium transition-all duration-200 shadow-sm
+                          focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-70
+                          ${hasError 
+                            ? "border-red-400 bg-red-50/50 focus:border-red-500 focus:ring-red-500 dark:border-red-600 dark:bg-red-900/20 dark:focus:border-red-500 dark:focus:ring-red-500" 
+                            : "border-slate-300 bg-white focus:border-blue-500 focus:ring-blue-500 hover:border-slate-400 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:focus:border-blue-400 dark:focus:ring-offset-slate-800 dark:hover:border-slate-500"
+                          }
+                        `}
+                        disabled={disabled}
+                        aria-invalid={hasError}
+                        aria-describedby={hasError ? `map-${id}-error` : undefined}
+                      >
+                        <option value="">— nie mapuj —</option>
+                        {options}
+                      </select>
+                      {hasError && (
+                        <span
+                          id={`map-${id}-error`}
+                          className="text-xs font-medium text-red-600 dark:text-red-400 flex items-center gap-1.5"
+                          role="alert"
+                          aria-live="polite"
+                        >
+                          <svg className="h-3.5 w-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                          </svg>
+                          {error}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          );
-        })}
+              );
+            })}
+          </div>
+        </div>
         {!allRequiredMapped && (
           <div className="rounded-xl border border-amber-200/80 bg-gradient-to-br from-amber-50/80 via-amber-50/50 to-white p-4 shadow-md shadow-amber-200/30 dark:border-amber-800/80 dark:from-amber-950/30 dark:via-amber-900/20 dark:to-slate-900 dark:shadow-amber-950/50">
             <div className="flex items-start gap-3">
@@ -225,7 +220,6 @@ export function MappingForm({
             </div>
           </div>
         )}
-        </div>
       </div>
       
       <div className="space-y-4">
